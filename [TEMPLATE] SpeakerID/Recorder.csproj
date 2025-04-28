@@ -110,6 +110,8 @@
     <Compile Include="GUI\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MainFuctions\SequenceMatching.cs" />
+    <Compile Include="MainFuctions\UserIdentification.cs" />
     <Compile Include="MFCC\MFCC.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
