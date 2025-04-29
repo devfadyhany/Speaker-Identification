@@ -18,12 +18,12 @@ namespace Recorder
                 if (i == 0)
                     dissimilarityMatrix[0, i] = 0;
                 else
-                    dissimilarityMatrix[0, i] = dissimilarityMatrix[0, i - 1] + 1;
+                    dissimilarityMatrix[0, i] = double.MaxValue;
             }
 
             for (int i = 0; i <= M; i++)
             {
-                dissimilarityMatrix[i, 0] = dissimilarityMatrix[i - 1, 0] + 1;
+                dissimilarityMatrix[i, 0] = double.MaxValue;
             }
 
             if (N == 0 || M == 0)
@@ -33,18 +33,17 @@ namespace Recorder
             {
                 for (int j = 1; j <= M; j++)
                 {
-                    double insertCost = dissimilarityMatrix[i, j - 1] + 1;
-                    double deleteCost = dissimilarityMatrix[i - 1, j] + 1;
-                    double replaceCost = dissimilarityMatrix[i - 1, j - 1];
+                    double eculadianDistance = CompareFrames(input.Frames[i - 1], template.Frames[j - 1]);
 
-                    if (CompareFrames(input.Frames[i - 1], template.Frames[j - 1]) != 0)
-                        replaceCost++;
+                    double insertCost = dissimilarityMatrix[i, j - 1];
+                    double deleteCost = dissimilarityMatrix[i - 1, j];
+                    double matchCost = dissimilarityMatrix[i - 1, j - 1];
 
-                    dissimilarityMatrix[i, j] = Math.Min(Math.Min(insertCost, deleteCost), replaceCost);
+                    dissimilarityMatrix[i, j] = eculadianDistance + Math.Min(Math.Min(insertCost, deleteCost), matchCost);
                 }
             }
 
-            return dissimilarityMatrix[N, M];
+            return CalcTotalDistance(dissimilarityMatrix, N, M);
         }
 
         public static int DTW_Pruning(Sequence input, Sequence template, int N, int M, int pruningWidth)
@@ -84,6 +83,46 @@ namespace Recorder
             }
 
             sum = Math.Sqrt(sum);
+
+            return sum;
+        }
+
+        public static int MinDirection(double a, double b, double c)
+        {
+            if (b <= a && b <= c)
+                return 1;
+
+            if (a <= b && a <= c)
+                return 2;
+
+            return 3;
+        }
+
+        public static double CalcTotalDistance(double[,] dissimilarityMatrix, int N, int M)
+        {
+            int x = N, y = M;
+            double sum = 0;
+
+            while (x != 0 && y != 0)
+            {
+                sum += dissimilarityMatrix[x, y];
+
+                int direction = MinDirection(dissimilarityMatrix[x - 1, y], dissimilarityMatrix[x - 1, y - 1], dissimilarityMatrix[x, y - 1]);
+
+                switch (direction)
+                {
+                    case 1:
+                        x--;
+                        y--;
+                        break;
+                    case 2:
+                        x--;
+                        break;
+                    case 3:
+                        y--;
+                        break;
+                }
+            }
 
             return sum;
         }
