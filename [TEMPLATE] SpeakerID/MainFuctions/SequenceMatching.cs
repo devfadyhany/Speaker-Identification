@@ -8,10 +8,10 @@ namespace Recorder
 {
     class SequenceMatching
     {
-        public static int DTW_NoPruning(Sequence input, Sequence template, int N, int M)
+        public static double DTW_NoPruning(Sequence input, Sequence template, int N, int M)
         {
             // TODO: Implement Matching Algorithm without Pruning.
-            int[,] dissimilarityMatrix = new int[N + 1, M + 1];
+            double[,] dissimilarityMatrix = new double[N + 1, M + 1];
 
             for (int i = 0; i <= N; i++)
             {
@@ -33,11 +33,11 @@ namespace Recorder
             {
                 for (int j = 1; j <= M; j++)
                 {
-                    int insertCost = dissimilarityMatrix[i, j - 1] + 1;
-                    int deleteCost = dissimilarityMatrix[i - 1, j] + 1;
-                    int replaceCost = dissimilarityMatrix[i - 1, j - 1];
+                    double insertCost = dissimilarityMatrix[i, j - 1] + 1;
+                    double deleteCost = dissimilarityMatrix[i - 1, j] + 1;
+                    double replaceCost = dissimilarityMatrix[i - 1, j - 1];
 
-                    if (FramesMatched(input.Frames[i - 1], template.Frames[j - 1]))
+                    if (CompareFrames(input.Frames[i - 1], template.Frames[j - 1]) != 0)
                         replaceCost++;
 
                     dissimilarityMatrix[i, j] = Math.Min(Math.Min(insertCost, deleteCost), replaceCost);
@@ -74,15 +74,18 @@ namespace Recorder
         #endregion
 
         #region HelperFunctions
-        public static bool FramesMatched(MFCCFrame frame1, MFCCFrame frame2)
+        public static double CompareFrames(MFCCFrame frame1, MFCCFrame frame2)
         {
+            double sum = 0;
+
             for (int i = 0; i < 13; i++)
             {
-                if (frame1.Features[i] != frame2.Features[i])
-                    return false;
+                sum += Math.Pow(frame1.Features[i] - frame2.Features[i], 2);
             }
 
-            return true;
+            sum = Math.Sqrt(sum);
+
+            return sum;
         }
 
         #endregion
