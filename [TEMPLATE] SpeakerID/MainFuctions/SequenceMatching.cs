@@ -13,15 +13,14 @@ namespace Recorder
             // TODO: Implement Matching Algorithm without Pruning.
             double[,] dissimilarityMatrix = new double[N + 1, M + 1];
 
-            for (int i = 0; i <= N; i++)
+            dissimilarityMatrix[0, 0] = 0;
+
+            for (int i = 1; i <= N; i++)
             {
-                if (i == 0)
-                    dissimilarityMatrix[0, i] = 0;
-                else
-                    dissimilarityMatrix[0, i] = double.MaxValue;
+                dissimilarityMatrix[0, i] = double.MaxValue;
             }
 
-            for (int i = 0; i <= M; i++)
+            for (int i = 1; i <= M; i++)
             {
                 dissimilarityMatrix[i, 0] = double.MaxValue;
             }
@@ -35,11 +34,14 @@ namespace Recorder
                 {
                     double eculadianDistance = CompareFrames(input.Frames[i - 1], template.Frames[j - 1]);
 
-                    double insertCost = dissimilarityMatrix[i, j - 1];
-                    double deleteCost = dissimilarityMatrix[i - 1, j];
+                    double stretchCost = dissimilarityMatrix[i - 1, j];
                     double matchCost = dissimilarityMatrix[i - 1, j - 1];
+                    double shrinkCost = double.MaxValue;
 
-                    dissimilarityMatrix[i, j] = eculadianDistance + Math.Min(Math.Min(insertCost, deleteCost), matchCost);
+                    if (j >= 2)
+                        shrinkCost = dissimilarityMatrix[i - 1, j - 2];
+
+                    dissimilarityMatrix[i, j] = eculadianDistance + Math.Min(Math.Min(stretchCost, matchCost), shrinkCost);
                 }
             }
 
@@ -103,11 +105,11 @@ namespace Recorder
             int x = N, y = M;
             double sum = 0;
 
-            while (x != 0 && y != 0)
+            while (x > 0 && y > 0)
             {
                 sum += dissimilarityMatrix[x, y];
 
-                int direction = MinDirection(dissimilarityMatrix[x - 1, y], dissimilarityMatrix[x - 1, y - 1], dissimilarityMatrix[x, y - 1]);
+                int direction = MinDirection(dissimilarityMatrix[x - 1, y], dissimilarityMatrix[x - 1, y - 1], dissimilarityMatrix[x - 1, y - 2]);
 
                 switch (direction)
                 {
@@ -119,7 +121,8 @@ namespace Recorder
                         x--;
                         break;
                     case 3:
-                        y--;
+                        x--;
+                        y -= 2;
                         break;
                 }
             }
