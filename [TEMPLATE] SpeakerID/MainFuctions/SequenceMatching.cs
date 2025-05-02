@@ -53,7 +53,57 @@ namespace Recorder
             int dissimilarityScore = 0; // Total Distance
 
             // TODO: Implement Matching Algorithm with Pruning.
+            double[,] D = new double[N + 1, M + 1];
 
+            for (int i = 0; i <= N; i++){
+                for (int j = 0; j <= M; j++){
+                    D[i, j] = double.MaxValue;
+                }
+            }
+            D[0, 0] = 0;
+
+            for (int i = 1; i <= N; i++){
+                int minJ = Math.Max(1, i - pruningWidth);
+                int maxJ = Math.Min(M, i + pruningWidth);
+
+                for (int j = minJ; j <= maxJ; j++){
+                    double cost = CompareFrames(input.Frames[i - 1], template.Frames[j - 1]);
+
+                    double stretchCost = D[i - 1, j];
+                    double matchCost = D[i - 1, j - 1];
+
+                    double shrinkCost = double.MaxValue;
+                    if (j >= 2 && (i - 1) >= (j - 2 - pruningWidth)){
+                        shrinkCost = D[i - 1, j - 2];
+                    }
+                    D[i, j] = cost + Math.Min(Math.Min(stretchCost, matchCost), shrinkCost);
+                }
+            }
+
+            double minDist = double.MaxValue;
+
+            if (Math.Abs(N - M) <= pruningWidth){
+                return D[N, M];
+            }
+            else if (N > M){
+                int minRow = Math.Max(1, M - pruningWidth);
+                int maxRow = Math.Min(N, M + pruningWidth);
+
+                for (int i = minRow; i <= maxRow; i++){
+                    if (D[i, M] < minDist) minDist = D[i, M];
+                }
+            }
+            else{
+                int minCol = Math.Max(1, N - pruningWidth);
+                int maxCol = Math.Min(M, N + pruningWidth);
+
+                for (int j = minCol; j <= maxCol; j++){
+                    if (D[N, j] < minDist) minDist = D[N, j];
+                }
+            }
+
+            return minDist;
+        }
             return dissimilarityScore;
         }
 
