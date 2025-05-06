@@ -8,6 +8,7 @@ using Accord.DirectSound;
 using Accord.Audio.Filters;
 using Recorder.Recorder;
 using Recorder.MFCC;
+using System.Collections.Generic;
 
 namespace Recorder
 {
@@ -32,6 +33,8 @@ namespace Recorder
         private Decoder decoder;
 
         private bool isRecorded;
+
+        private List<User> templateData;
 
         public MainForm()
         {
@@ -308,7 +311,11 @@ namespace Recorder
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
+            saveFileDialog1.ShowDialog(this);
 
+            string[] splittedString = saveFileDialog1.FileName.Split('\\');
+
+            UserIdentification.AddVoice(splittedString[splittedString.Length - 2], signal);
         }
 
         private void loadTrain1ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -316,12 +323,34 @@ namespace Recorder
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.ShowDialog();
 
-            var hobba = TestcaseLoader.LoadTestcase2Training(fileDialog.FileName);
+            this.templateData = TestcaseLoader.LoadTestcase2Training(fileDialog.FileName);
         }
 
+        private void btnIdentify_Click(object sender, EventArgs e)
+        {
+            UserIdentification.IdentifyVoice(seq, false, 0);
+        }
 
-        
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
 
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                path = fileDialog.FileName;
+                //Open the selected audio file
+                AudioSignal newSignal = AudioOperations.OpenAudioFile(path);
+                newSignal = AudioOperations.RemoveSilence(newSignal);
 
-     }
+                string[] splittedString = path.Split('\\');
+
+                string finalName = splittedString[splittedString.Length - 1];
+                finalName = finalName.Remove(finalName.Length - 4, 4);
+
+                UserIdentification.AddVoice(finalName, newSignal);
+
+                btnIdentify.Enabled = true;
+            }
+        }
+    }
 }

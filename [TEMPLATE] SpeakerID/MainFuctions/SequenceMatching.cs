@@ -17,12 +17,12 @@ namespace Recorder
 
             for (int i = 1; i <= N; i++)
             {
-                dissimilarityMatrix[0, i] = double.MaxValue;
+                dissimilarityMatrix[i, 0] = double.MaxValue;
             }
 
             for (int i = 1; i <= M; i++)
             {
-                dissimilarityMatrix[i, 0] = double.MaxValue;
+                dissimilarityMatrix[0, i] = double.MaxValue;
             }
 
             if (N == 0 || M == 0)
@@ -165,7 +165,15 @@ namespace Recorder
             {
                 sum += dissimilarityMatrix[x, y];
 
-                int direction = MinDirection(dissimilarityMatrix[x - 1, y], dissimilarityMatrix[x - 1, y - 1], dissimilarityMatrix[x - 1, y - 2]);
+                int direction;
+
+                if (y > 1)
+                    direction = MinDirection(dissimilarityMatrix[x - 1, y], dissimilarityMatrix[x - 1, y - 1], dissimilarityMatrix[x - 1, y - 2]);
+                else
+                    direction = 2;
+
+                if (y <= 1 && x == 0)
+                    return sum;
 
                 switch (direction)
                 {
