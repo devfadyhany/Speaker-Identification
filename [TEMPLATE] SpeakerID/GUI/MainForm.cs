@@ -35,6 +35,8 @@ namespace Recorder
         private bool isRecorded;
 
         private List<User> templateData;
+        private bool usePruning;
+        private int pruningWidth;
 
         public MainForm()
         {
@@ -44,6 +46,11 @@ namespace Recorder
             chart.SimpleMode = true;
             chart.AddWaveform("wave", Color.Green, 1, false);
             updateButtons();
+
+            usePruning = false;
+            pruningWidth = 20;
+
+            ChangePruningLabel();
         }
 
 
@@ -223,7 +230,7 @@ namespace Recorder
             if (this.encoder != null && this.encoder.IsRunning())
             {
                 btnAdd.Enabled = false;
-                btnIdentify.Enabled = false;
+                //btnIdentify.Enabled = false;
                 btnPlay.Enabled = false;
                 btnStop.Enabled = true;
                 btnRecord.Enabled = false;
@@ -232,7 +239,7 @@ namespace Recorder
             else if (this.decoder != null && this.decoder.IsRunning())
             {
                 btnAdd.Enabled = false;
-                btnIdentify.Enabled = false;
+                //btnIdentify.Enabled = false;
                 btnPlay.Enabled = false;
                 btnStop.Enabled = true;
                 btnRecord.Enabled = false;
@@ -241,13 +248,15 @@ namespace Recorder
             else
             {
                 btnAdd.Enabled = this.path != null || this.encoder != null;
-                btnIdentify.Enabled = false;
+                //btnIdentify.Enabled = false;
                 btnPlay.Enabled = this.path != null || this.encoder != null;//stream != null;
                 btnStop.Enabled = false;
                 btnRecord.Enabled = true;
                 trackBar1.Enabled = this.decoder != null;
                 trackBar1.Value = 0;
             }
+
+            btnIdentify.Enabled = this.templateData != null;
         }
 
         private void MainFormFormClosed(object sender, FormClosedEventArgs e)
@@ -324,33 +333,61 @@ namespace Recorder
             fileDialog.ShowDialog();
 
             this.templateData = TestcaseLoader.LoadTestcase2Training(fileDialog.FileName);
+
+            MessageBox.Show("Training data loaded successfully!");
+
+            btnIdentify.Enabled = true;
         }
 
         private void btnIdentify_Click(object sender, EventArgs e)
         {
-            UserIdentification.IdentifyVoice(seq, false, 0);
+            btnIdentify.Enabled = false;
+
+            if (usePruning)
+                UserIdentification.IdentifyVoice(seq, true, pruningWidth, this.templateData);
+            else
+                UserIdentification.IdentifyVoice(seq, false, 0, this.templateData);
+
+            btnIdentify.Enabled = true;
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.ShowDialog();
 
-            if (fileDialog.ShowDialog() == DialogResult.OK)
+            this.templateData = TestcaseLoader.LoadSampleTrainingTest(fileDialog.FileName);
+
+            MessageBox.Show("Sample Training data loaded successfully!");
+
+            btnIdentify.Enabled = true;
+        }
+
+        private void togglePruningToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            usePruning = !usePruning;
+
+            ChangePruningLabel();
+        }
+
+        private void ChangePruningLabel()
+        {
+            if (usePruning)
             {
-                path = fileDialog.FileName;
-                //Open the selected audio file
-                AudioSignal newSignal = AudioOperations.OpenAudioFile(path);
-                newSignal = AudioOperations.RemoveSilence(newSignal);
-
-                string[] splittedString = path.Split('\\');
-
-                string finalName = splittedString[splittedString.Length - 1];
-                finalName = finalName.Remove(finalName.Length - 4, 4);
-
-                UserIdentification.AddVoice(finalName, newSignal);
-
-                btnIdentify.Enabled = true;
+                Label_pruning.Text = "True";
+                Label_pruning.ForeColor = Color.Green;
             }
+            else
+            {
+                Label_pruning.Text = "False";
+                Label_pruning.ForeColor = Color.Red;
+            }
+        }
+
+        private void clearMemoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UserIdentification.DB = new List<User>();
+            btnIdentify.Enabled = false;
         }
     }
 }

@@ -14,6 +14,11 @@ namespace Recorder
     }
     static class TestcaseLoader
     {
+        static public List<User> LoadSampleTrainingTest(string trainingListFileName)
+        {
+            return LoadDatasetInSameFolder(trainingListFileName);
+        }
+
         //11 users. each user has ~100 small training samples (with silent parts removed).
 
         static public List<User> LoadTestcase1Training(string trainingListFileName)
@@ -78,6 +83,57 @@ namespace Recorder
 
             //shrinkage factor should be larger than 1.
             return ConcatenateSamples(originalDataset, 40);
+        }
+
+        static private List<User> LoadDatasetInSameFolder(string datasetFileName)
+        {
+            //Get The dataset folder path.
+            var splittedPath = datasetFileName.Split('\\');
+            string folderPath = "";
+            for (int i = 0; i < splittedPath.Length - 1; i++)
+            {
+                folderPath += splittedPath[i] + '\\';
+            }
+
+            Dictionary<string, User> users = new Dictionary<string, User>();
+            StreamReader reader = new StreamReader(datasetFileName);
+            string line;
+
+            while ((line = reader.ReadLine()) != null)
+            {
+                string userName = line.Split('_')[1];
+                string fileName = line + ".wav";
+                //check if user already exists, if not add an entry in the dictionary.
+                if (users.ContainsKey(userName) == false)
+                {
+                    User user = new User();
+                    user.UserTemplates = new List<AudioSignal>();
+                    user.UserName = userName;
+                    users.Add(userName, user);
+                }
+                AudioSignal audio;
+                string fullFileName = folderPath + fileName;
+                try
+                {
+                    audio = openNISTWav(fullFileName);
+                }
+                catch (Exception)
+                {
+                    audio = AudioOperations.OpenAudioFile(folderPath + fileName);
+                }
+                audio = AudioOperations.RemoveSilence(audio);
+                users[userName].UserTemplates.Add(audio);
+            }
+            reader.Close();
+
+            //move the users to a list for convenience reasons only.
+            List<User> samples = new List<User>();
+            foreach (var user in users)
+            {
+                samples.Add(user.Value);
+            }
+
+            return samples;
         }
 
         static private List<User> LoadDataset(string datasetFileName)
@@ -150,6 +206,10 @@ namespace Recorder
               while(true)
               {
                   string line = reader.ReadLine();
+
+                  if (line == null)
+                      break;
+
                   var splittedLine = line.Split(' ');
                   if (splittedLine[0] == "sample_count")
                   {
