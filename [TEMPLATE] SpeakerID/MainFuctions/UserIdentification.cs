@@ -74,7 +74,7 @@ namespace Recorder
             MessageBox.Show("New user (" + newUser.UserName + ") has been added successfully!");
         }
         
-        public static void IdentifyVoice(Sequence testSequence, bool with_pruning, int pruning_width, List<User> templateDB)
+        public static void IdentifyVoice(Sequence testSequence, List<User> templateDB, bool with_pruning = false, int pruning_width = 0, bool with_syncSearch = false, int shiftSize = 0)
         {
             if (templateDB != null)
                 DB = templateDB;
@@ -93,15 +93,12 @@ namespace Recorder
 
                     double distance = 0;
 
-                    if (with_pruning)
-                    {
+                    if (with_syncSearch)
+                        distance = SequenceMatching.Sync_Search(testSequence, trainSequence, testFrameCount, trainFrameCount, shiftSize);
+                    else if (with_pruning)
                         distance = SequenceMatching.DTW_Pruning(testSequence, trainSequence, testFrameCount, trainFrameCount, pruning_width);
-                    }
                     else
-                    {
                         distance = SequenceMatching.DTW_NoPruning(testSequence, trainSequence, testFrameCount, trainFrameCount);
-                        //distance = SequenceMatching.Sync_Search(testSequence, trainSequence, testFrameCount, trainFrameCount, 1);
-                    }
 
 
                     if (distance < bestDistance)

@@ -36,11 +36,16 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearMemoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadTrain1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.modesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.togglePruningToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.TB_pruningWidth = new System.Windows.Forms.ToolStripTextBox();
+            this.toggleSyncSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnRecord = new System.Windows.Forms.Button();
@@ -53,10 +58,15 @@
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.togglePruningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.Label_pruning = new System.Windows.Forms.Label();
-            this.clearMemoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Label_width = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.Label_syncSearch = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.TB_shiftSize = new System.Windows.Forms.ToolStripTextBox();
+            this.Label_shiftSize = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
@@ -66,7 +76,8 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.optionsToolStripMenuItem});
+            this.optionsToolStripMenuItem,
+            this.modesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(404, 28);
@@ -88,26 +99,33 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(185, 26);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(185, 26);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // clearMemoryToolStripMenuItem
+            // 
+            this.clearMemoryToolStripMenuItem.Name = "clearMemoryToolStripMenuItem";
+            this.clearMemoryToolStripMenuItem.Size = new System.Drawing.Size(185, 26);
+            this.clearMemoryToolStripMenuItem.Text = "Clear Memory";
+            this.clearMemoryToolStripMenuItem.Click += new System.EventHandler(this.clearMemoryToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(221, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(182, 6);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(185, 26);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -115,25 +133,59 @@
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadTrain1ToolStripMenuItem,
-            this.loadToolStripMenuItem,
-            this.togglePruningToolStripMenuItem});
+            this.loadToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(49, 26);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(49, 24);
             this.optionsToolStripMenuItem.Text = "Edit";
             // 
             // loadTrain1ToolStripMenuItem
             // 
             this.loadTrain1ToolStripMenuItem.Name = "loadTrain1ToolStripMenuItem";
-            this.loadTrain1ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.loadTrain1ToolStripMenuItem.Size = new System.Drawing.Size(215, 26);
             this.loadTrain1ToolStripMenuItem.Text = "Load Train1";
             this.loadTrain1ToolStripMenuItem.Click += new System.EventHandler(this.loadTrain1ToolStripMenuItem_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(215, 26);
             this.loadToolStripMenuItem.Text = "Load Sample Train";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
+            // 
+            // modesToolStripMenuItem
+            // 
+            this.modesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.togglePruningToolStripMenuItem1,
+            this.toggleSyncSearchToolStripMenuItem});
+            this.modesToolStripMenuItem.Name = "modesToolStripMenuItem";
+            this.modesToolStripMenuItem.Size = new System.Drawing.Size(68, 24);
+            this.modesToolStripMenuItem.Text = "Modes";
+            // 
+            // togglePruningToolStripMenuItem1
+            // 
+            this.togglePruningToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.TB_pruningWidth});
+            this.togglePruningToolStripMenuItem1.Name = "togglePruningToolStripMenuItem1";
+            this.togglePruningToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
+            this.togglePruningToolStripMenuItem1.Text = "Toggle Pruning";
+            this.togglePruningToolStripMenuItem1.Click += new System.EventHandler(this.togglePruningToolStripMenuItem1_Click);
+            // 
+            // TB_pruningWidth
+            // 
+            this.TB_pruningWidth.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.TB_pruningWidth.Name = "TB_pruningWidth";
+            this.TB_pruningWidth.Size = new System.Drawing.Size(100, 27);
+            this.TB_pruningWidth.Text = "20";
+            this.TB_pruningWidth.TextChanged += new System.EventHandler(this.toolStripTextBox1_TextChanged);
+            // 
+            // toggleSyncSearchToolStripMenuItem
+            // 
+            this.toggleSyncSearchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.TB_shiftSize});
+            this.toggleSyncSearchToolStripMenuItem.Name = "toggleSyncSearchToolStripMenuItem";
+            this.toggleSyncSearchToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.toggleSyncSearchToolStripMenuItem.Text = "Toggle Sync Search";
+            this.toggleSyncSearchToolStripMenuItem.Click += new System.EventHandler(this.toggleSyncSearchToolStripMenuItem_Click);
             // 
             // openFileDialog1
             // 
@@ -264,13 +316,6 @@
             this.timer1.Enabled = true;
             this.timer1.Tick += new System.EventHandler(this.updateTimer_Tick);
             // 
-            // togglePruningToolStripMenuItem
-            // 
-            this.togglePruningToolStripMenuItem.Name = "togglePruningToolStripMenuItem";
-            this.togglePruningToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.togglePruningToolStripMenuItem.Text = "Toggle Pruning";
-            this.togglePruningToolStripMenuItem.Click += new System.EventHandler(this.togglePruningToolStripMenuItem_Click);
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -284,25 +329,92 @@
             // 
             this.Label_pruning.AutoSize = true;
             this.Label_pruning.ForeColor = System.Drawing.Color.Green;
-            this.Label_pruning.Location = new System.Drawing.Point(99, 182);
+            this.Label_pruning.Location = new System.Drawing.Point(101, 182);
             this.Label_pruning.Name = "Label_pruning";
             this.Label_pruning.Size = new System.Drawing.Size(38, 17);
             this.Label_pruning.TabIndex = 10;
             this.Label_pruning.Text = "True";
             this.Label_pruning.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // clearMemoryToolStripMenuItem
+            // Label_width
             // 
-            this.clearMemoryToolStripMenuItem.Name = "clearMemoryToolStripMenuItem";
-            this.clearMemoryToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.clearMemoryToolStripMenuItem.Text = "Clear Memory";
-            this.clearMemoryToolStripMenuItem.Click += new System.EventHandler(this.clearMemoryToolStripMenuItem_Click);
+            this.Label_width.AutoSize = true;
+            this.Label_width.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.Label_width.Location = new System.Drawing.Point(328, 183);
+            this.Label_width.Name = "Label_width";
+            this.Label_width.Size = new System.Drawing.Size(24, 17);
+            this.Label_width.TabIndex = 12;
+            this.Label_width.Text = "20";
+            this.Label_width.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(228, 182);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(105, 17);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "Pruning Width :";
+            // 
+            // Label_syncSearch
+            // 
+            this.Label_syncSearch.AutoSize = true;
+            this.Label_syncSearch.ForeColor = System.Drawing.Color.Green;
+            this.Label_syncSearch.Location = new System.Drawing.Point(101, 212);
+            this.Label_syncSearch.Name = "Label_syncSearch";
+            this.Label_syncSearch.Size = new System.Drawing.Size(38, 17);
+            this.Label_syncSearch.TabIndex = 14;
+            this.Label_syncSearch.Text = "True";
+            this.Label_syncSearch.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 211);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(96, 17);
+            this.label4.TabIndex = 13;
+            this.label4.Text = "Sync Search :";
+            // 
+            // TB_shiftSize
+            // 
+            this.TB_shiftSize.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.TB_shiftSize.Name = "TB_shiftSize";
+            this.TB_shiftSize.Size = new System.Drawing.Size(100, 27);
+            this.TB_shiftSize.Text = "0";
+            this.TB_shiftSize.TextChanged += new System.EventHandler(this.toolStripTextBox1_TextChanged_1);
+            // 
+            // Label_shiftSize
+            // 
+            this.Label_shiftSize.AutoSize = true;
+            this.Label_shiftSize.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.Label_shiftSize.Location = new System.Drawing.Point(300, 213);
+            this.Label_shiftSize.Name = "Label_shiftSize";
+            this.Label_shiftSize.Size = new System.Drawing.Size(24, 17);
+            this.Label_shiftSize.TabIndex = 16;
+            this.Label_shiftSize.Text = "20";
+            this.Label_shiftSize.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(228, 212);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(75, 17);
+            this.label5.TabIndex = 15;
+            this.label5.Text = "Shift Size :";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(404, 207);
+            this.ClientSize = new System.Drawing.Size(404, 278);
+            this.Controls.Add(this.Label_shiftSize);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.Label_syncSearch);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.Label_width);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.Label_pruning);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lbLength);
@@ -350,9 +462,19 @@
         private System.Windows.Forms.Button btnRecord;
         private System.Windows.Forms.ToolStripMenuItem loadTrain1ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem togglePruningToolStripMenuItem;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label Label_pruning;
         private System.Windows.Forms.ToolStripMenuItem clearMemoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem modesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem togglePruningToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripTextBox TB_pruningWidth;
+        private System.Windows.Forms.ToolStripMenuItem toggleSyncSearchToolStripMenuItem;
+        private System.Windows.Forms.Label Label_width;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label Label_syncSearch;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ToolStripTextBox TB_shiftSize;
+        private System.Windows.Forms.Label Label_shiftSize;
+        private System.Windows.Forms.Label label5;
     }
 }

@@ -38,6 +38,9 @@ namespace Recorder
         private bool usePruning;
         private int pruningWidth;
 
+        private bool useSyncSearch;
+        private int shiftSize;
+
         public MainForm()
         {
             InitializeComponent();
@@ -50,7 +53,11 @@ namespace Recorder
             usePruning = false;
             pruningWidth = 20;
 
+            useSyncSearch = false;
+            shiftSize = 0;
+
             ChangePruningLabel();
+            ChangeSyncSearchLabel();
         }
 
 
@@ -343,10 +350,12 @@ namespace Recorder
         {
             btnIdentify.Enabled = false;
 
-            if (usePruning)
-                UserIdentification.IdentifyVoice(seq, true, pruningWidth, this.templateData);
+            if (useSyncSearch)
+                UserIdentification.IdentifyVoice(seq, this.templateData, false, 0, true, shiftSize);
+            else if (usePruning)
+                UserIdentification.IdentifyVoice(seq, this.templateData, true, pruningWidth, false, 0);
             else
-                UserIdentification.IdentifyVoice(seq, false, 0, this.templateData);
+                UserIdentification.IdentifyVoice(seq, this.templateData);
 
             btnIdentify.Enabled = true;
         }
@@ -363,12 +372,6 @@ namespace Recorder
             btnIdentify.Enabled = true;
         }
 
-        private void togglePruningToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            usePruning = !usePruning;
-
-            ChangePruningLabel();
-        }
 
         private void ChangePruningLabel()
         {
@@ -376,11 +379,13 @@ namespace Recorder
             {
                 Label_pruning.Text = "True";
                 Label_pruning.ForeColor = Color.Green;
+                Label_width.Text = pruningWidth.ToString();
             }
             else
             {
                 Label_pruning.Text = "False";
                 Label_pruning.ForeColor = Color.Red;
+                Label_width.Text = "";
             }
         }
 
@@ -388,6 +393,64 @@ namespace Recorder
         {
             UserIdentification.DB = new List<User>();
             btnIdentify.Enabled = false;
+        }
+
+        private void togglePruningToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            usePruning = !usePruning;
+
+            ChangePruningLabel();
+        }
+
+        private void toolStripTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                pruningWidth = Convert.ToInt32(TB_pruningWidth.Text);
+            }
+            catch (Exception exp)
+            {
+                return;
+            }
+
+            ChangePruningLabel();
+        }
+
+        private void toggleSyncSearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            useSyncSearch = !useSyncSearch;
+
+            ChangeSyncSearchLabel();
+        }
+
+        private void ChangeSyncSearchLabel()
+        {
+            if (useSyncSearch)
+            {
+                Label_syncSearch.Text = "True";
+                Label_syncSearch.ForeColor = Color.Green;
+                Label_shiftSize.Text = shiftSize.ToString();
+            }
+            else
+            {
+                Label_syncSearch.Text = "False";
+                Label_syncSearch.ForeColor = Color.Red;
+                Label_shiftSize.Text = "";
+            }
+        }
+
+        private void toolStripTextBox1_TextChanged_1(object sender, EventArgs e)
+        {
+            try
+            {
+                shiftSize = Convert.ToInt32(TB_shiftSize.Text);
+            }
+            catch (Exception exp)
+            {
+                return;
+            }
+
+            ChangeSyncSearchLabel();
         }
     }
 }
