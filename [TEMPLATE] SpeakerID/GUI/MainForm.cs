@@ -34,12 +34,15 @@ namespace Recorder
 
         private bool isRecorded;
 
+
+        // ============================ Our Added Variables =============================
         private List<User> templateData;
         private bool usePruning;
         private int pruningWidth;
 
         private bool useSyncSearch;
         private int shiftSize;
+        // ============================ Our Added Variables =============================
 
         public MainForm()
         {
@@ -50,16 +53,91 @@ namespace Recorder
             chart.AddWaveform("wave", Color.Green, 1, false);
             updateButtons();
 
+
+            // ======================== Our Initilization ==============================
+            ResetModes();
+            // ======================== Our Initilization ==============================
+        }
+
+
+        #region Helper Functions
+
+        private void UpdateModesStatus(string mode)
+        {
+            switch (mode)
+            {
+                case "TSS":
+                    if (useSyncSearch)
+                    {
+                        Label_syncSearch.Text = "True";
+                        Label_syncSearch.ForeColor = Color.Green;
+                        Label_shiftSize.Text = shiftSize.ToString();
+
+                        Label_pruning.Text = "False";
+                        Label_pruning.ForeColor = Color.Red;
+                        Label_width.Text = "";
+                    }
+                    else
+                    {
+                        Label_syncSearch.Text = "False";
+                        Label_syncSearch.ForeColor = Color.Red;
+                        Label_shiftSize.Text = "";
+                    }
+                    break;
+                case "pruning":
+                    if (usePruning)
+                    {
+                        Label_pruning.Text = "True";
+                        Label_pruning.ForeColor = Color.Green;
+                        Label_width.Text = pruningWidth.ToString();
+
+                        Label_syncSearch.Text = "False";
+                        Label_syncSearch.ForeColor = Color.Red;
+                        Label_shiftSize.Text = "";
+                    }
+                    else
+                    {
+                        Label_pruning.Text = "False";
+                        Label_pruning.ForeColor = Color.Red;
+                        Label_width.Text = "";
+                    }
+                    break;
+                default:
+                    Label_syncSearch.Text = "False";
+                    Label_syncSearch.ForeColor = Color.Red;
+                    Label_shiftSize.Text = "";
+
+                    Label_pruning.Text = "False";
+                    Label_pruning.ForeColor = Color.Red;
+                    Label_width.Text = "";
+                    break;
+            }
+        }
+
+        private void ResetModes()
+        {
             usePruning = false;
             pruningWidth = 20;
 
             useSyncSearch = false;
             shiftSize = 0;
 
-            ChangePruningLabel();
-            ChangeSyncSearchLabel();
+            UpdateModesStatus("pruning");
+            UpdateModesStatus("TSS");
         }
 
+        private void UpdateDBSize()
+        {
+            if (templateData == null)
+                Label_DBSize.Text = "0";
+            else
+                Label_DBSize.Text = templateData.Count.ToString();
+        }
+
+        #endregion
+
+
+        #region Recorder
 
         /// <summary>
         ///   Starts recording audio from the sound card
@@ -226,74 +304,25 @@ namespace Recorder
             }
         }
 
-        private void updateButtons()
-        {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action(updateButtons));
-                return;
-            }
-
-            if (this.encoder != null && this.encoder.IsRunning())
-            {
-                btnAdd.Enabled = false;
-                //btnIdentify.Enabled = false;
-                btnPlay.Enabled = false;
-                btnStop.Enabled = true;
-                btnRecord.Enabled = false;
-                trackBar1.Enabled = false;
-            }
-            else if (this.decoder != null && this.decoder.IsRunning())
-            {
-                btnAdd.Enabled = false;
-                //btnIdentify.Enabled = false;
-                btnPlay.Enabled = false;
-                btnStop.Enabled = true;
-                btnRecord.Enabled = false;
-                trackBar1.Enabled = true;
-            }
-            else
-            {
-                btnAdd.Enabled = this.path != null || this.encoder != null;
-                //btnIdentify.Enabled = false;
-                btnPlay.Enabled = this.path != null || this.encoder != null;//stream != null;
-                btnStop.Enabled = false;
-                btnRecord.Enabled = true;
-                trackBar1.Enabled = this.decoder != null;
-                trackBar1.Value = 0;
-            }
-
-            btnIdentify.Enabled = this.templateData != null;
-        }
-
-        private void MainFormFormClosed(object sender, FormClosedEventArgs e)
-        {
-            Stop();
-        }
-
-        private void saveFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (this.encoder != null)
-            {
-                Stream fileStream = saveFileDialog1.OpenFile();
-                this.encoder.Save(fileStream);
-            }
-        }
-
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            saveFileDialog1.ShowDialog(this);
-        }
-
         private void updateTimer_Tick(object sender, EventArgs e)
         {
             if (this.encoder != null) { lbLength.Text = String.Format("Length: {0:00.00} sec.", this.encoder.duration / 1000.0); }
         }
 
-        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        private void Stop()
         {
-            Close();
+            if (this.encoder != null) { this.encoder.Stop(); }
+            if (this.decoder != null) { this.decoder.Stop(); }
         }
+
+
+        #endregion
+
+
+        #region ToolStrip Menu
+
+        #region File Menu
+
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog open = new OpenFileDialog();
@@ -304,7 +333,7 @@ namespace Recorder
                 //Open the selected audio file
                 signal = AudioOperations.OpenAudioFile(path);
                 signal = AudioOperations.RemoveSilence(signal);
-                 seq = AudioOperations.ExtractFeatures(signal);
+                seq = AudioOperations.ExtractFeatures(signal);
                 for (int i = 0; i < seq.Frames.Length; i++)
                 {
                     for (int j = 0; j < 13; j++)
@@ -319,20 +348,37 @@ namespace Recorder
             }
         }
 
-        private void Stop()
-        {
-            if (this.encoder != null) { this.encoder.Stop(); }
-            if (this.decoder != null) { this.decoder.Stop(); }
-        }
-
-        private void btnAdd_Click(object sender, EventArgs e)
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveFileDialog1.ShowDialog(this);
-
-            string[] splittedString = saveFileDialog1.FileName.Split('\\');
-
-            UserIdentification.AddVoice(splittedString[splittedString.Length - 2], signal);
         }
+
+        private void saveFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (this.encoder != null)
+            {
+                Stream fileStream = saveFileDialog1.OpenFile();
+                this.encoder.Save(fileStream);
+            }
+        }
+
+        private void clearMemoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UserIdentification.DB = null;
+            this.templateData = null;
+            btnIdentify.Enabled = false;
+
+            UpdateDBSize();
+        }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        #endregion
+
+        #region Edit Menu
 
         private void loadTrain1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -344,6 +390,125 @@ namespace Recorder
             MessageBox.Show("Training data loaded successfully!");
 
             btnIdentify.Enabled = true;
+
+            UpdateDBSize();
+        }
+
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.ShowDialog();
+
+            this.templateData = TestcaseLoader.LoadSampleTrainingTest(fileDialog.FileName);
+
+            MessageBox.Show("Sample Training data loaded successfully!");
+
+            btnIdentify.Enabled = true;
+
+            UpdateDBSize();
+        }
+
+        #endregion
+
+        #region Modes Menu
+        private void togglePruningToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            usePruning = !usePruning;
+
+            UpdateModesStatus("pruning");
+        }
+
+        private void toolStripTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                pruningWidth = Convert.ToInt32(TB_pruningWidth.Text);
+            }
+            catch (Exception exp)
+            {
+                return;
+            }
+
+            UpdateModesStatus("pruning");
+        }
+
+        private void toggleSyncSearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            useSyncSearch = !useSyncSearch;
+
+            UpdateModesStatus("TSS");
+        }
+
+        private void toolStripTextBox1_TextChanged_1(object sender, EventArgs e)
+        {
+            try
+            {
+                shiftSize = Convert.ToInt32(TB_shiftSize.Text);
+            }
+            catch (Exception exp)
+            {
+                return;
+            }
+
+            UpdateModesStatus("TSS");
+        }
+
+        #endregion
+
+        #endregion
+
+
+        #region Controls
+
+        private void updateButtons()
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(updateButtons));
+                return;
+            }
+
+            if (this.encoder != null && this.encoder.IsRunning())
+            {
+                btnAdd.Enabled = false;
+                btnIdentify.Enabled = false;
+                btnPlay.Enabled = false;
+                btnStop.Enabled = true;
+                btnRecord.Enabled = false;
+                trackBar1.Enabled = false;
+            }
+            else if (this.decoder != null && this.decoder.IsRunning())
+            {
+                btnAdd.Enabled = false;
+                btnIdentify.Enabled = false;
+                btnPlay.Enabled = false;
+                btnStop.Enabled = true;
+                btnRecord.Enabled = false;
+                trackBar1.Enabled = true;
+            }
+            else
+            {
+                btnAdd.Enabled = this.path != null || this.encoder != null;
+                btnIdentify.Enabled = false;
+                btnPlay.Enabled = this.path != null || this.encoder != null;//stream != null;
+                btnStop.Enabled = false;
+                btnRecord.Enabled = true;
+                trackBar1.Enabled = this.decoder != null;
+                trackBar1.Value = 0;
+            }
+
+            // ======================== Our Code ==============================
+            btnIdentify.Enabled = this.templateData != null && btnPlay.Enabled == true;
+            // ======================== Our Code ==============================
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.ShowDialog(this);
+
+            string[] splittedString = saveFileDialog1.FileName.Split('\\');
+
+            UserIdentification.AddVoice(splittedString[splittedString.Length - 2], signal);
         }
 
         private void btnIdentify_Click(object sender, EventArgs e)
@@ -360,97 +525,11 @@ namespace Recorder
             btnIdentify.Enabled = true;
         }
 
-        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        #endregion
+
+        private void MainFormFormClosed(object sender, FormClosedEventArgs e)
         {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.ShowDialog();
-
-            this.templateData = TestcaseLoader.LoadSampleTrainingTest(fileDialog.FileName);
-
-            MessageBox.Show("Sample Training data loaded successfully!");
-
-            btnIdentify.Enabled = true;
-        }
-
-
-        private void ChangePruningLabel()
-        {
-            if (usePruning)
-            {
-                Label_pruning.Text = "True";
-                Label_pruning.ForeColor = Color.Green;
-                Label_width.Text = pruningWidth.ToString();
-            }
-            else
-            {
-                Label_pruning.Text = "False";
-                Label_pruning.ForeColor = Color.Red;
-                Label_width.Text = "";
-            }
-        }
-
-        private void clearMemoryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            UserIdentification.DB = new List<User>();
-            btnIdentify.Enabled = false;
-        }
-
-        private void togglePruningToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            usePruning = !usePruning;
-
-            ChangePruningLabel();
-        }
-
-        private void toolStripTextBox1_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                pruningWidth = Convert.ToInt32(TB_pruningWidth.Text);
-            }
-            catch (Exception exp)
-            {
-                return;
-            }
-
-            ChangePruningLabel();
-        }
-
-        private void toggleSyncSearchToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            useSyncSearch = !useSyncSearch;
-
-            ChangeSyncSearchLabel();
-        }
-
-        private void ChangeSyncSearchLabel()
-        {
-            if (useSyncSearch)
-            {
-                Label_syncSearch.Text = "True";
-                Label_syncSearch.ForeColor = Color.Green;
-                Label_shiftSize.Text = shiftSize.ToString();
-            }
-            else
-            {
-                Label_syncSearch.Text = "False";
-                Label_syncSearch.ForeColor = Color.Red;
-                Label_shiftSize.Text = "";
-            }
-        }
-
-        private void toolStripTextBox1_TextChanged_1(object sender, EventArgs e)
-        {
-            try
-            {
-                shiftSize = Convert.ToInt32(TB_shiftSize.Text);
-            }
-            catch (Exception exp)
-            {
-                return;
-            }
-
-            ChangeSyncSearchLabel();
+            Stop();
         }
     }
 }
