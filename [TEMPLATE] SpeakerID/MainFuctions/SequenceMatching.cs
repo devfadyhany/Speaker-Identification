@@ -11,6 +11,7 @@ namespace Recorder
         public static double DTW_NoPruning(Sequence input, Sequence template, int N, int M)
         {
             // TODO: Implement Matching Algorithm without Pruning.
+            /*
             if (input == template)
                 return 0;
 
@@ -49,6 +50,9 @@ namespace Recorder
             }
 
             return CalcTotalDistance(dissimilarityMatrix, N, M);
+             */
+
+            return DTW_Pruning(input, template, N, M, 0);
         }
 
         public static double DTW_Pruning(Sequence input, Sequence template, int N, int M, int pruningWidth)
