@@ -9,6 +9,8 @@ using Accord.Audio.Filters;
 using Recorder.Recorder;
 using Recorder.MFCC;
 using System.Collections.Generic;
+using System.ComponentModel;
+
 
 namespace Recorder
 {
@@ -37,6 +39,8 @@ namespace Recorder
 
         // ============================ Our Added Variables =============================
         private List<User> templateData;
+        private List<User> testData;
+
         private bool usePruning;
         private int pruningWidth;
 
@@ -366,6 +370,7 @@ namespace Recorder
         {
             UserIdentification.DB = null;
             this.templateData = null;
+            this.testData = null;
             btnIdentify.Enabled = false;
 
             UpdateDBSize();
@@ -383,15 +388,112 @@ namespace Recorder
         private void loadTrain1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Title = "Choose Training Set";
+            fileDialog.ShowDialog();
+
+            this.templateData = TestcaseLoader.LoadTestcase1Training(fileDialog.FileName);
+
+            MessageBox.Show("Training data loaded successfully!");
+
+            OpenFileDialog fileDialog2 = new OpenFileDialog();
+            fileDialog2.Title = "Choose Test Set";
+            fileDialog2.ShowDialog();
+
+            this.testData = TestcaseLoader.LoadTestcase1Testing(fileDialog2.FileName);
+
+            this.testData = this.templateData;
+
+            MessageBox.Show("Test data loaded successfully!");
+
+            //UserIdentification.IdentifyList(this.testData, this.templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += (s, args) =>
+            {
+                UserIdentification.IdentifyList(this.testData, this.templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+            };
+
+            worker.RunWorkerCompleted += (s, args) =>
+            {
+                btnIdentify.Enabled = true;
+                UpdateDBSize();
+            };
+
+            worker.RunWorkerAsync();
+        }
+
+        private void loadTestCase2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Title = "Choose Training Set";
             fileDialog.ShowDialog();
 
             this.templateData = TestcaseLoader.LoadTestcase2Training(fileDialog.FileName);
 
             MessageBox.Show("Training data loaded successfully!");
 
-            btnIdentify.Enabled = true;
+            OpenFileDialog fileDialog2 = new OpenFileDialog();
+            fileDialog2.Title = "Choose Test Set";
+            fileDialog2.ShowDialog();
 
-            UpdateDBSize();
+            this.testData = TestcaseLoader.LoadTestcase2Testing(fileDialog2.FileName);
+
+            this.testData = this.templateData;
+
+            MessageBox.Show("Test data loaded successfully!");
+
+            //UserIdentification.IdentifyList(this.testData, this.templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += (s, args) =>
+            {
+                UserIdentification.IdentifyList(this.testData, this.templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+            };
+
+            worker.RunWorkerCompleted += (s, args) =>
+            {
+                btnIdentify.Enabled = true;
+                UpdateDBSize();
+            };
+
+            worker.RunWorkerAsync();
+        }
+
+        private void loadTestCase3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Title = "Choose Training Set";
+            fileDialog.ShowDialog();
+
+            this.templateData = TestcaseLoader.LoadTestcase3Training(fileDialog.FileName);
+
+            MessageBox.Show("Training data loaded successfully!");
+
+            OpenFileDialog fileDialog2 = new OpenFileDialog();
+            fileDialog2.Title = "Choose Test Set";
+            fileDialog2.ShowDialog();
+
+            this.testData = TestcaseLoader.LoadTestcase3Testing(fileDialog2.FileName);
+
+            this.testData = this.templateData;
+
+            MessageBox.Show("Test data loaded successfully!");
+
+            //UserIdentification.IdentifyList(this.testData, this.templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += (s, args) =>
+            {
+                UserIdentification.IdentifyList(this.testData, this.templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+            };
+
+            worker.RunWorkerCompleted += (s, args) =>
+            {
+                btnIdentify.Enabled = true;
+                UpdateDBSize();
+            };
+
+            worker.RunWorkerAsync();
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -545,12 +647,7 @@ namespace Recorder
         {
             btnIdentify.Enabled = false;
 
-            if (useSyncSearch)
-                UserIdentification.IdentifyVoice(seq, this.templateData, false, 0, true, shiftSize);
-            else if (usePruning)
-                UserIdentification.IdentifyVoice(seq, this.templateData, true, pruningWidth, false, 0);
-            else
-                UserIdentification.IdentifyVoice(seq, this.templateData);
+            UserIdentification.IdentifyVoice(seq, this.templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
 
             btnIdentify.Enabled = true;
         }
@@ -561,7 +658,5 @@ namespace Recorder
         {
             Stop();
         }
-
-        
     }
 }

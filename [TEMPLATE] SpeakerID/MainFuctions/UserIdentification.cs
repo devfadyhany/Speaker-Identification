@@ -40,22 +40,24 @@ namespace Recorder
          * between the input sequence and the entire pre-existing template sequences,
          * the program should determine the name of the user and output it on the screen.
          */
-        
+
         //static string trainpath = @"C:\\MyData\\FCIS\\3rd Year\\second term\\analysis and design of algorithms\\Project\\Speaker-Identification\\TEST CASES\\[2] COMPLETE\\Complete SpeakerID Dataset\\TrainingList.txt";
         //public static List<User> training1 = TestcaseLoader.LoadTestcase1Training(trainpath);
         //public static List<User> training2 = TestcaseLoader.LoadTestcase2Training(trainpath);
         //static List<User> training3 = TestcaseLoader.LoadTestcase3Training(trainpath);
-        
+
         //static string testpath = @"C:\\MyData\\FCIS\\3rd Year\\second term\\analysis and design of algorithms\\Project\\Speaker-Identification\\TEST CASES\\[2] COMPLETE\\Complete SpeakerID Dataset\\TestingList.txt";
         //public static List<User> testing1 = TestcaseLoader.LoadTestcase1Testing(testpath);
         //public static List<User> testing2 = TestcaseLoader.LoadTestcase2Testing(testpath);
         //static List<User> testing2 = TestcaseLoader.LoadTestcase2Testing(testpath);
 
         public static List<User> DB = new List<User>();
+        private static Dictionary<AudioSignal, Sequence> templateSequences = new Dictionary<AudioSignal, Sequence>();
+
 
         public static void AddVoice(string name, AudioSignal myaudio)
         {
-            foreach(User existUser in DB)
+            foreach (User existUser in DB)
             {
                 if (existUser.UserName == name)
                 {
@@ -74,8 +76,8 @@ namespace Recorder
 
             MessageBox.Show("New user (" + newUser.UserName + ") has been added successfully!");
         }
-        
-        public static void IdentifyVoice(Sequence testSequence, List<User> templateDB, bool with_pruning = false, int pruning_width = 0, bool with_syncSearch = false, int shiftSize = 0)
+
+        public static User IdentifyVoice(Sequence testSequence, List<User> templateDB, bool with_pruning = false, int pruning_width = 0, bool with_syncSearch = false, int shiftSize = 0, bool listMode = false)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
@@ -84,14 +86,27 @@ namespace Recorder
 
             int testFrameCount = testSequence.Frames.Count();
 
-            string bestUser = "";
+            User bestUser = new User();
+            //string bestUser = "";
             double bestDistance = double.MaxValue;
 
             foreach (User trainUser in DB)
             {
                 foreach (AudioSignal trainSignal in trainUser.UserTemplates)
                 {
-                    Sequence trainSequence = MFCC.MFCC.ExtractFeatures(trainSignal.data, trainSignal.sampleRate);
+                    Sequence trainSequence;
+
+                    if (templateSequences.ContainsKey(trainSignal))
+                    {
+                        trainSequence = templateSequences[trainSignal];
+                    }
+                    else
+                    {
+                        templateSequences.Add(trainSignal, null);
+                        trainSequence = MFCC.MFCC.ExtractFeatures(trainSignal.data, trainSignal.sampleRate);
+                        templateSequences[trainSignal] = trainSequence;
+                    }
+
                     int trainFrameCount = trainSequence.Frames.Count();
 
                     double distance = 0;
@@ -107,7 +122,7 @@ namespace Recorder
                     if (distance < bestDistance)
                     {
                         bestDistance = distance;
-                        bestUser = trainUser.UserName;
+                        bestUser = trainUser;
                     }
 
                     if (bestDistance == 0)
@@ -120,9 +135,55 @@ namespace Recorder
 
             stopwatch.Stop();
 
-            MessageBox.Show("Matched user: " + bestUser
-                            + "\nDistance: " + bestDistance
-                            + "\nExecution Time: " + stopwatch.ElapsedMilliseconds + " ms");
+            if (!listMode)
+            {
+                MessageBox.Show("Matched user: " + bestUser.UserName
+                                + "\nDistance: " + bestDistance
+                                + "\nExecution Time: " + stopwatch.ElapsedMilliseconds + " ms");
+            }
+
+            return bestUser;
+        }
+    
+        public static void IdentifyList(List<User> inputDB, List<User> templateDB, bool with_pruning = false, int pruning_width = 0, bool with_syncSearch = false, int shiftSize = 0)
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            List<string> matchedUsers = new List<string>();
+
+            int i = 1;
+
+            foreach (User inputUser in inputDB)
+            {
+                foreach (AudioSignal inputSignal in inputUser.UserTemplates)
+                {
+                    Sequence inputSequence;
+
+                    if (templateSequences.ContainsKey(inputSignal))
+                    {
+                        inputSequence = templateSequences[inputSignal];
+                    }
+                    else
+                    {
+                        templateSequences.Add(inputSignal, null);
+                        inputSequence = MFCC.MFCC.ExtractFeatures(inputSignal.data, inputSignal.sampleRate);
+                        templateSequences[inputSignal] = inputSequence;
+                    }
+
+                    matchedUsers.Add(IdentifyVoice(inputSequence, templateDB, with_pruning, pruning_width, with_syncSearch, shiftSize, true).UserName);
+                }
+
+                Console.WriteLine("Checked " + i++);
+            }
+
+            stopwatch.Stop();
+
+            double error = TestcaseLoader.CheckTestcaseAccuracy(inputDB, matchedUsers);
+
+            double accuracy = (1 - error) * 100;
+
+            MessageBox.Show("Test Accuracy: " + accuracy + "%" 
+                        + "\nExecution Time: " + stopwatch.ElapsedMilliseconds + " ms");
         }
     }
 }

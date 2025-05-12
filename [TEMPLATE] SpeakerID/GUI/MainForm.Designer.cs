@@ -42,6 +42,7 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadTrain1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadSingleTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.togglePruningToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.TB_pruningWidth = new System.Windows.Forms.ToolStripTextBox();
@@ -69,7 +70,9 @@
             this.label5 = new System.Windows.Forms.Label();
             this.Label_DBSize = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.loadSingleTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadTestCase2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadTestCase3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
@@ -135,9 +138,12 @@
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadTrain1ToolStripMenuItem,
             this.loadToolStripMenuItem,
-            this.loadSingleTemplateToolStripMenuItem});
+            this.loadSingleTemplateToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.loadTrain1ToolStripMenuItem,
+            this.loadTestCase2ToolStripMenuItem,
+            this.loadTestCase3ToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(49, 24);
             this.optionsToolStripMenuItem.Text = "Edit";
@@ -146,7 +152,7 @@
             // 
             this.loadTrain1ToolStripMenuItem.Name = "loadTrain1ToolStripMenuItem";
             this.loadTrain1ToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
-            this.loadTrain1ToolStripMenuItem.Text = "Load Train1";
+            this.loadTrain1ToolStripMenuItem.Text = "Load Test Case 1";
             this.loadTrain1ToolStripMenuItem.Click += new System.EventHandler(this.loadTrain1ToolStripMenuItem_Click);
             // 
             // loadToolStripMenuItem
@@ -155,6 +161,13 @@
             this.loadToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
             this.loadToolStripMenuItem.Text = "Load Sample Train";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
+            // 
+            // loadSingleTemplateToolStripMenuItem
+            // 
+            this.loadSingleTemplateToolStripMenuItem.Name = "loadSingleTemplateToolStripMenuItem";
+            this.loadSingleTemplateToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
+            this.loadSingleTemplateToolStripMenuItem.Text = "Load Single Template";
+            this.loadSingleTemplateToolStripMenuItem.Click += new System.EventHandler(this.loadSingleTemplateToolStripMenuItem_Click);
             // 
             // modesToolStripMenuItem
             // 
@@ -428,12 +441,24 @@
             this.label6.TabIndex = 17;
             this.label6.Text = "DB Current Size:";
             // 
-            // loadSingleTemplateToolStripMenuItem
+            // loadTestCase2ToolStripMenuItem
             // 
-            this.loadSingleTemplateToolStripMenuItem.Name = "loadSingleTemplateToolStripMenuItem";
-            this.loadSingleTemplateToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
-            this.loadSingleTemplateToolStripMenuItem.Text = "Load Single Template";
-            this.loadSingleTemplateToolStripMenuItem.Click += new System.EventHandler(this.loadSingleTemplateToolStripMenuItem_Click);
+            this.loadTestCase2ToolStripMenuItem.Name = "loadTestCase2ToolStripMenuItem";
+            this.loadTestCase2ToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
+            this.loadTestCase2ToolStripMenuItem.Text = "Load Test Case 2";
+            this.loadTestCase2ToolStripMenuItem.Click += new System.EventHandler(this.loadTestCase2ToolStripMenuItem_Click);
+            // 
+            // loadTestCase3ToolStripMenuItem
+            // 
+            this.loadTestCase3ToolStripMenuItem.Name = "loadTestCase3ToolStripMenuItem";
+            this.loadTestCase3ToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
+            this.loadTestCase3ToolStripMenuItem.Text = "Load Test Case 3";
+            this.loadTestCase3ToolStripMenuItem.Click += new System.EventHandler(this.loadTestCase3ToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(233, 6);
             // 
             // MainForm
             // 
@@ -512,5 +537,8 @@
         private System.Windows.Forms.Label Label_DBSize;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ToolStripMenuItem loadSingleTemplateToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadTestCase2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem loadTestCase3ToolStripMenuItem;
     }
 }

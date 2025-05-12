@@ -11,6 +11,9 @@ namespace Recorder
         public static double DTW_NoPruning(Sequence input, Sequence template, int N, int M)
         {
             // TODO: Implement Matching Algorithm without Pruning.
+            if (input == template)
+                return 0;
+
             double[,] dissimilarityMatrix = new double[N + 1, M + 1];
 
             dissimilarityMatrix[0, 0] = 0;
@@ -51,6 +54,9 @@ namespace Recorder
         public static double DTW_Pruning(Sequence input, Sequence template, int N, int M, int pruningWidth)
         {
             // TODO: Implement Matching Algorithm with Pruning.
+            if (input == template)
+                return 0;
+
             double[,] D = new double[N + 1, M + 1];
 
             for (int i = 0; i <= N; i++)
@@ -117,6 +123,9 @@ namespace Recorder
         public static double Sync_Search(Sequence input, Sequence template, int N, int M, int shiftSize=0)
         {
             // TODO: Implement Time Synchronous Search.
+            if (input == template)
+                return 0;
+
             int smallerSequenceSize = Math.Min(N, M);
 
             double totalDistance = 0;
