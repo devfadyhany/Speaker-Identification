@@ -14,75 +14,10 @@ namespace Recorder
     }
     static class TestcaseLoader
     {
+        #region Our Test Code
         static public List<User> LoadSampleTrainingTest(string trainingListFileName)
         {
             return LoadDatasetInSameFolder(trainingListFileName);
-        }
-
-        //11 users. each user has ~100 small training samples (with silent parts removed).
-
-        static public List<User> LoadTestcase1Training(string trainingListFileName)
-        {
-            return LoadDataset(trainingListFileName);
-        }
-
-        
-        static public List<User> LoadTestcase1Testing(string testingListFileName)
-        {
-            return LoadDataset(testingListFileName);
-        }
-
-        //WARNING: this function in particular is not tested!!!!!
-        static public double CheckTestcaseAccuracy(List<User> testCase, List<string> testcaseResult)
-        {
-            int misclassifiedSamples = 0;
-            int resultIndex = 0;
-            for (int i = 0; i < testCase.Count; i++)
-            {
-                for (int j = 0; j < testCase[i].UserTemplates.Count; j++)
-			    {
-                    if (testCase[i].UserName != testcaseResult[resultIndex])
-                        misclassifiedSamples++;
-                    
-                    resultIndex++;
-			    }
-            }
-
-            return (double) misclassifiedSamples / testcaseResult.Count;
-        }
-
-        //11 users. each user has ~10 medium sized training samples (with silent parts removed).
-        static public List<User> LoadTestcase2Training(string trainingListFileName)
-        {
-            var originalDataset = LoadDataset(trainingListFileName);
-
-            //shrinkage factor should be larger than 1.
-            return ConcatenateSamples(originalDataset, 10);
-        }
-
-        static public List<User> LoadTestcase2Testing(string testingListFileName)
-        {
-            var originalDataset = LoadDataset(testingListFileName);
-
-            //shrinkage factor should be larger than 1.
-            return ConcatenateSamples(originalDataset, 10);
-        }
-
-        //11 users. each user has ~2 large sized training samples (with silent parts removed).
-        static public List<User> LoadTestcase3Training(string trainingListFileName)
-        {
-            var originalDataset = LoadDataset(trainingListFileName);
-
-            //shrinkage factor should be larger than 1.
-            return ConcatenateSamples(originalDataset, 40);
-        }
-
-        static public List<User> LoadTestcase3Testing(string testingListFileName)
-        {
-            var originalDataset = LoadDataset(testingListFileName);
-
-            //shrinkage factor should be larger than 1.
-            return ConcatenateSamples(originalDataset, 40);
         }
 
         static private List<User> LoadDatasetInSameFolder(string datasetFileName)
@@ -113,14 +48,9 @@ namespace Recorder
                 }
                 AudioSignal audio;
                 string fullFileName = folderPath + fileName;
-                try
-                {
-                    audio = openNISTWav(fullFileName);
-                }
-                catch (Exception)
-                {
-                    audio = AudioOperations.OpenAudioFile(folderPath + fileName);
-                }
+                
+                audio = AudioOperations.OpenAudioFile(folderPath + fileName);
+
                 audio = AudioOperations.RemoveSilence(audio);
                 users[userName].UserTemplates.Add(audio);
             }
@@ -135,6 +65,88 @@ namespace Recorder
 
             return samples;
         }
+
+        #endregion
+
+        #region Testcase1
+
+        //11 users. each user has ~100 small training samples (with silent parts removed).
+
+        static public List<User> LoadTestcase1Training(string trainingListFileName)
+        {
+            return LoadDataset(trainingListFileName);
+        }
+
+
+        static public List<User> LoadTestcase1Testing(string testingListFileName)
+        {
+            return LoadDataset(testingListFileName);
+        }
+
+        #endregion
+
+        #region Testcase2
+
+        //11 users. each user has ~10 medium sized training samples (with silent parts removed).
+        static public List<User> LoadTestcase2Training(string trainingListFileName)
+        {
+            var originalDataset = LoadDataset(trainingListFileName);
+
+            //shrinkage factor should be larger than 1.
+            return ConcatenateSamples(originalDataset, 10);
+        }
+
+        static public List<User> LoadTestcase2Testing(string testingListFileName)
+        {
+            var originalDataset = LoadDataset(testingListFileName);
+
+            //shrinkage factor should be larger than 1.
+            return ConcatenateSamples(originalDataset, 10);
+        }
+
+        #endregion
+
+        #region Testcase3
+
+        //11 users. each user has ~2 large sized training samples (with silent parts removed).
+        static public List<User> LoadTestcase3Training(string trainingListFileName)
+        {
+            var originalDataset = LoadDataset(trainingListFileName);
+
+            //shrinkage factor should be larger than 1.
+            return ConcatenateSamples(originalDataset, 40);
+        }
+
+        static public List<User> LoadTestcase3Testing(string testingListFileName)
+        {
+            var originalDataset = LoadDataset(testingListFileName);
+
+            //shrinkage factor should be larger than 1.
+            return ConcatenateSamples(originalDataset, 40);
+        }
+
+        #endregion
+
+
+        //WARNING: this function in particular is not tested!!!!!
+        static public double CheckTestcaseAccuracy(List<User> testCase, List<string> testcaseResult)
+        {
+            int misclassifiedSamples = 0;
+            int resultIndex = 0;
+            for (int i = 0; i < testCase.Count; i++)
+            {
+                for (int j = 0; j < testCase[i].UserTemplates.Count; j++)
+			    {
+                    if (testCase[i].UserName != testcaseResult[resultIndex])
+                        misclassifiedSamples++;
+                    
+                    resultIndex++;
+			    }
+            }
+
+            return (double) misclassifiedSamples / testcaseResult.Count;
+        }
+        
 
         static private List<User> LoadDataset(string datasetFileName)
         {
@@ -207,8 +219,11 @@ namespace Recorder
               {
                   string line = reader.ReadLine();
 
-                  if (line == null)
-                      break;
+                if (line == null)
+                {
+                    Console.WriteLine(filename);
+                    break;
+                }
 
                   var splittedLine = line.Split(' ');
                   if (splittedLine[0] == "sample_count")

@@ -408,6 +408,36 @@ namespace Recorder
             UpdateDBSize();
         }
 
+        private void loadSingleTemplateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.ShowDialog();
+
+            string path = fileDialog.FileName;
+            string[] splittedPath = path.Split('\\');
+
+            this.templateData = new List<User>();
+
+            AudioSignal audio;
+
+            audio = AudioOperations.OpenAudioFile(path);
+            audio = AudioOperations.RemoveSilence(audio);
+
+            User u1 = new User();
+
+            u1.UserName = splittedPath[splittedPath.Length - 1];
+            u1.UserTemplates = new List<AudioSignal>();
+            u1.UserTemplates.Add(audio);
+
+            this.templateData.Add(u1);
+
+            MessageBox.Show("Template loaded successfully!");
+
+            btnIdentify.Enabled = true;
+
+            UpdateDBSize();
+        }
+
         #endregion
 
         #region Modes Menu
@@ -531,5 +561,7 @@ namespace Recorder
         {
             Stop();
         }
+
+        
     }
 }

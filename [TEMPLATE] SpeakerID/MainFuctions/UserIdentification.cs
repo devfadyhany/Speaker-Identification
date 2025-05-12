@@ -106,7 +106,13 @@ namespace Recorder
                         bestDistance = distance;
                         bestUser = trainUser.UserName;
                     }
+
+                    if (bestDistance == 0)
+                        break;
                 }
+
+                if (bestDistance == 0)
+                    break;
             }
 
             MessageBox.Show("Matched user: " + bestUser + "\nDistance: " + bestDistance);
