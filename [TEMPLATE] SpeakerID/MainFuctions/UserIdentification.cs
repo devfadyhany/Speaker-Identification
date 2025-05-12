@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace Recorder
 {
@@ -76,6 +77,8 @@ namespace Recorder
         
         public static void IdentifyVoice(Sequence testSequence, List<User> templateDB, bool with_pruning = false, int pruning_width = 0, bool with_syncSearch = false, int shiftSize = 0)
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             if (templateDB != null)
                 DB = templateDB;
 
@@ -115,7 +118,11 @@ namespace Recorder
                     break;
             }
 
-            MessageBox.Show("Matched user: " + bestUser + "\nDistance: " + bestDistance);
+            stopwatch.Stop();
+
+            MessageBox.Show("Matched user: " + bestUser
+                            + "\nDistance: " + bestDistance
+                            + "\nExecution Time: " + stopwatch.ElapsedMilliseconds + " ms");
         }
     }
 }
