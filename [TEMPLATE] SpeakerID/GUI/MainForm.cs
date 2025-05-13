@@ -672,13 +672,6 @@ namespace Recorder
             btnIdentify.Enabled = true;
         }
 
-        #endregion
-
-        private void MainFormFormClosed(object sender, FormClosedEventArgs e)
-        {
-            Stop();
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             removeSilence = !removeSilence;
@@ -693,6 +686,13 @@ namespace Recorder
                 Label_RemoveSilence.Text = "False";
                 Label_RemoveSilence.ForeColor = Color.Red;
             }
+        }
+
+        #endregion
+
+        private void MainFormFormClosed(object sender, FormClosedEventArgs e)
+        {
+            Stop();
         }
     }
 }

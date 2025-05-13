@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Recorder.MFCC;
+using System.Threading.Tasks;
 
 namespace Recorder
 {
@@ -59,22 +60,23 @@ namespace Recorder
             if (input == template)
                 return 0;
 
-            // Ensure end point is reachable
             pruningWidth /= 2;
             pruningWidth = Math.Max(pruningWidth, Math.Abs(N - M));
 
             double[,] D = new double[N + 1, M + 1];
 
-            // Initialize matrix with infinity
             for (int i = 0; i <= N; i++)
+            {
                 for (int j = 0; j <= M; j++)
+                {
                     D[i, j] = double.MaxValue;
+                }
+            }
 
             D[0, 0] = 0;
 
             for (int i = 1; i <= N; i++)
             {
-                // Pruning band for current row
                 int minJ = Math.Max(1, i - pruningWidth);
                 int maxJ = Math.Min(M, i + pruningWidth);
 
@@ -82,12 +84,12 @@ namespace Recorder
                 {
                     double cost = CompareFrames(input.Frames[i - 1], template.Frames[j - 1]);
 
-                    double stretchCost = D[i - 1, j];         // stretch template
-                    double matchCost = D[i - 1, j - 1];       // match 1-to-1
+                    double stretchCost = D[i - 1, j];
+                    double matchCost = D[i - 1, j - 1];
                     double shrinkCost = double.MaxValue;
 
                     if (j >= 2)
-                        shrinkCost = D[i - 1, j - 2];         // shrink template (skip 1 frame)
+                        shrinkCost = D[i - 1, j - 2];
 
                     D[i, j] = cost + Math.Min(Math.Min(stretchCost, matchCost), shrinkCost);
                 }
@@ -181,7 +183,9 @@ namespace Recorder
 
             for (int i = 0; i < 13; i++)
             {
-                sum += Math.Pow(frame1.Features[i] - frame2.Features[i], 2);
+                double diff = frame1.Features[i] - frame2.Features[i];
+                sum += diff * diff;
+                //sum += Math.Pow(frame1.Features[i] - frame2.Features[i], 2);
             }
 
             sum = Math.Sqrt(sum);
@@ -192,10 +196,10 @@ namespace Recorder
         public static int MinDirection(double a, double b, double c)
         {
             if (b <= a && b <= c)
-                return 1;
+                return 2;
 
             if (a <= b && a <= c)
-                return 2;
+                return 1;
 
             return 3;
         }
