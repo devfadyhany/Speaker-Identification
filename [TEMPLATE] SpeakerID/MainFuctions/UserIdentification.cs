@@ -79,10 +79,13 @@ namespace Recorder
 
         public static User IdentifyVoice(Sequence testSequence, List<User> templateDB, bool with_pruning = false, int pruning_width = 0, bool with_syncSearch = false, int shiftSize = 0, bool listMode = false)
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            Stopwatch totalTime = Stopwatch.StartNew();
 
             if (templateDB != null)
                 DB = templateDB;
+
+            long DTW_ONLY_TIME = 0;
+
 
             int testFrameCount = testSequence.Frames.Count();
 
@@ -111,13 +114,28 @@ namespace Recorder
 
                     double distance = 0;
 
+                    Stopwatch stopwatch;
+                    
                     if (with_syncSearch)
+                    {
+                        stopwatch = Stopwatch.StartNew();
                         distance = SequenceMatching.Sync_Search(testSequence, trainSequence, testFrameCount, trainFrameCount, shiftSize);
-                    else if (with_pruning)
-                        distance = SequenceMatching.DTW_Pruning(testSequence, trainSequence, testFrameCount, trainFrameCount, pruning_width);
-                    else
-                        distance = SequenceMatching.DTW_NoPruning(testSequence, trainSequence, testFrameCount, trainFrameCount);
 
+                    }
+                    else if (with_pruning)
+                    {
+                        stopwatch = Stopwatch.StartNew();
+                        distance = SequenceMatching.DTW_Pruning(testSequence, trainSequence, testFrameCount, trainFrameCount, pruning_width);
+                    }
+                    else
+                    {
+                        stopwatch = Stopwatch.StartNew();
+                        distance = SequenceMatching.DTW_NoPruning(testSequence, trainSequence, testFrameCount, trainFrameCount);
+                    }
+                    
+                    stopwatch.Stop();
+
+                    DTW_ONLY_TIME += stopwatch.ElapsedMilliseconds;
 
                     if (distance < bestDistance)
                     {
@@ -133,13 +151,15 @@ namespace Recorder
                     break;
             }
 
-            stopwatch.Stop();
+
+            totalTime.Stop();
 
             if (!listMode)
             {
                 MessageBox.Show("Matched user: " + bestUser.UserName
                                 + "\nDistance: " + bestDistance
-                                + "\nExecution Time: " + stopwatch.ElapsedMilliseconds + " ms");
+                                + "\nDTW_ONLY Time: " + DTW_ONLY_TIME + " ms"
+                                + "\nTotal Execution Time: " + totalTime.ElapsedMilliseconds + " ms");
             }
 
             return bestUser;

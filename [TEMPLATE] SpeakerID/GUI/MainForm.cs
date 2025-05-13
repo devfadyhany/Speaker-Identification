@@ -523,7 +523,7 @@ namespace Recorder
             AudioSignal audio;
 
             audio = AudioOperations.OpenAudioFile(path);
-            audio = AudioOperations.RemoveSilence(audio);
+            //audio = AudioOperations.RemoveSilence(audio);
 
             User u1 = new User();
 

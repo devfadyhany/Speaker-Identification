@@ -36,7 +36,7 @@ namespace Recorder
 
             while ((line = reader.ReadLine()) != null)
             {
-                string userName = line.Split('_')[1];
+                string userName = line;
                 string fileName = line + ".wav";
                 //check if user already exists, if not add an entry in the dictionary.
                 if (users.ContainsKey(userName) == false)
@@ -51,7 +51,8 @@ namespace Recorder
                 
                 audio = AudioOperations.OpenAudioFile(folderPath + fileName);
 
-                audio = AudioOperations.RemoveSilence(audio);
+                //audio = AudioOperations.RemoveSilence(audio);
+
                 users[userName].UserTemplates.Add(audio);
             }
             reader.Close();
@@ -146,7 +147,6 @@ namespace Recorder
 
             return (double) misclassifiedSamples / testcaseResult.Count;
         }
-        
 
         static private List<User> LoadDataset(string datasetFileName)
         {
@@ -212,12 +212,12 @@ namespace Recorder
 
         static private AudioSignal openNISTWav(string filename)
         {
-            int sample_rate = 0, sample_count =0, sample_n_bytes = 0;
+            int sample_rate = 0, sample_count = 0, sample_n_bytes = 0;
             StreamReader reader = new StreamReader(filename);
-              
-              while(true)
-              {
-                  string line = reader.ReadLine();
+
+            while (true)
+            {
+                string line = reader.ReadLine();
 
                 if (line == null)
                 {
@@ -225,22 +225,22 @@ namespace Recorder
                     break;
                 }
 
-                  var splittedLine = line.Split(' ');
-                  if (splittedLine[0] == "sample_count")
-                  {
-                      sample_count = int.Parse(splittedLine[2]);
-                  }
-                  else if (splittedLine[0] == "sample_rate")
-                  {
-                      sample_rate = int.Parse(splittedLine[2]);
-                  }
-                  else if (splittedLine[0] == "sample_n_bytes")
-                  {
-                      sample_n_bytes = int.Parse(splittedLine[2]);
-                  }
-                  else if (splittedLine[0] == "end_head")
-                      break;
-              }
+                var splittedLine = line.Split(' ');
+                if (splittedLine[0] == "sample_count")
+                {
+                    sample_count = int.Parse(splittedLine[2]);
+                }
+                else if (splittedLine[0] == "sample_rate")
+                {
+                    sample_rate = int.Parse(splittedLine[2]);
+                }
+                else if (splittedLine[0] == "sample_n_bytes")
+                {
+                    sample_n_bytes = int.Parse(splittedLine[2]);
+                }
+                else if (splittedLine[0] == "end_head")
+                    break;
+            }
             reader.Close();
             byte[] wav = File.ReadAllBytes(filename);
 
@@ -263,7 +263,7 @@ namespace Recorder
             AudioSignal signal = new AudioSignal();
             signal.sampleRate = sample_rate;
             signal.data = data;
-            signal.signalLengthInMilliSec = (double) 1000.0 * sample_count / sample_rate ;
+            signal.signalLengthInMilliSec = (double)1000.0 * sample_count / sample_rate;
             return signal;
         }
 
@@ -272,7 +272,7 @@ namespace Recorder
             List<User> newDataset = new List<User>();
             foreach (User user in dataset)
             {
-                
+
                 int numberOfSequences = user.UserTemplates.Count;
                 //NOTE: i didn't handle the case if the number of sequences is not divisible by the shrinkage factor :)
                 int newNumberOfSequences = numberOfSequences / shrinkagefactor;
@@ -299,7 +299,7 @@ namespace Recorder
                         user.UserTemplates[j].data.CopyTo(concUser.UserTemplates[i].data, concIndex);
                         concIndex += user.UserTemplates[j].data.Length;
                     }
-                    
+
                     startIndex += shrinkagefactor;
                 }
 

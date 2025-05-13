@@ -201,10 +201,8 @@ C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] Speak
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.dll
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\AForge.xml
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\AForge.Math.xml
-C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\NAudio.xml
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.xml
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.DirectSound.xml
-C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.AssemblyReference.cache
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.MainForm.resources
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.Properties.Resources.resources
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.GenerateResource.cache

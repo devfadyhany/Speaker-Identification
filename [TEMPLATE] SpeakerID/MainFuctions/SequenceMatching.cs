@@ -8,10 +8,11 @@ namespace Recorder
 {
     class SequenceMatching
     {
+
         public static double DTW_NoPruning(Sequence input, Sequence template, int N, int M)
         {
             // TODO: Implement Matching Algorithm without Pruning.
-            /*
+
             if (input == template)
                 return 0;
 
@@ -49,10 +50,7 @@ namespace Recorder
                 }
             }
 
-            return CalcTotalDistance(dissimilarityMatrix, N, M);
-             */
-
-            return DTW_Pruning(input, template, N, M, 0);
+            return dissimilarityMatrix[N, M];
         }
 
         public static double DTW_Pruning(Sequence input, Sequence template, int N, int M, int pruningWidth)
@@ -61,19 +59,22 @@ namespace Recorder
             if (input == template)
                 return 0;
 
+            // Ensure end point is reachable
+            pruningWidth /= 2;
+            pruningWidth = Math.Max(pruningWidth, Math.Abs(N - M));
+
             double[,] D = new double[N + 1, M + 1];
 
+            // Initialize matrix with infinity
             for (int i = 0; i <= N; i++)
-            {
                 for (int j = 0; j <= M; j++)
-                {
                     D[i, j] = double.MaxValue;
-                }
-            }
+
             D[0, 0] = 0;
 
             for (int i = 1; i <= N; i++)
             {
+                // Pruning band for current row
                 int minJ = Math.Max(1, i - pruningWidth);
                 int maxJ = Math.Min(M, i + pruningWidth);
 
@@ -81,46 +82,51 @@ namespace Recorder
                 {
                     double cost = CompareFrames(input.Frames[i - 1], template.Frames[j - 1]);
 
-                    double stretchCost = D[i - 1, j];
-                    double matchCost = D[i - 1, j - 1];
-
+                    double stretchCost = D[i - 1, j];         // stretch template
+                    double matchCost = D[i - 1, j - 1];       // match 1-to-1
                     double shrinkCost = double.MaxValue;
-                    if (j >= 2 && (i - 1) >= (j - 2 - pruningWidth))
-                    {
-                        shrinkCost = D[i - 1, j - 2];
-                    }
+
+                    if (j >= 2)
+                        shrinkCost = D[i - 1, j - 2];         // shrink template (skip 1 frame)
+
                     D[i, j] = cost + Math.Min(Math.Min(stretchCost, matchCost), shrinkCost);
                 }
             }
 
-            double minDist = double.MaxValue;
+            return D[N, M];
+
+            /*double minDist = double.MaxValue;
 
             if (Math.Abs(N - M) <= pruningWidth)
             {
                 return D[N, M];
             }
-            else if (N > M)
-            {
-                int minRow = Math.Max(1, M - pruningWidth);
-                int maxRow = Math.Min(N, M + pruningWidth);
-
-                for (int i = minRow; i <= maxRow; i++)
-                {
-                    if (D[i, M] < minDist) minDist = D[i, M];
-                }
-            }
             else
             {
-                int minCol = Math.Max(1, N - pruningWidth);
-                int maxCol = Math.Min(M, N + pruningWidth);
-
-                for (int j = minCol; j <= maxCol; j++)
+                if (N > M)
                 {
-                    if (D[N, j] < minDist) minDist = D[N, j];
+                    int minRow = Math.Max(1, M - pruningWidth);
+                    int maxRow = Math.Min(N, M + pruningWidth);
+                    for (int i = minRow; i <= maxRow; i++)
+                    {
+                        if (D[i, M] < minDist)
+                            minDist = D[i, M];
+                    }
+                }
+                else
+                {
+                    int minCol = Math.Max(1, N - pruningWidth);
+                    int maxCol = Math.Min(M, N + pruningWidth);
+                    for (int j = minCol; j <= maxCol; j++)
+                    {
+                        if (D[N, j] < minDist)
+                            minDist = D[N, j];
+                    }
                 }
             }
 
             return minDist;
+            */
         }
 
         #region BonusFunctions
