@@ -40,9 +40,12 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadTrain1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadSingleTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.loadTrain1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadTestCase2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadTestCase3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.togglePruningToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.TB_pruningWidth = new System.Windows.Forms.ToolStripTextBox();
@@ -70,9 +73,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.Label_DBSize = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.loadTestCase2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadTestCase3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.Label_RemoveSilence = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
@@ -148,15 +150,9 @@
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(49, 24);
             this.optionsToolStripMenuItem.Text = "Edit";
             // 
-            // loadTrain1ToolStripMenuItem
-            // 
-            this.loadTrain1ToolStripMenuItem.Name = "loadTrain1ToolStripMenuItem";
-            this.loadTrain1ToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
-            this.loadTrain1ToolStripMenuItem.Text = "Load Test Case 1";
-            this.loadTrain1ToolStripMenuItem.Click += new System.EventHandler(this.loadTrain1ToolStripMenuItem_Click);
-            // 
             // loadToolStripMenuItem
             // 
+            this.loadToolStripMenuItem.Enabled = false;
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
             this.loadToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
             this.loadToolStripMenuItem.Text = "Load Sample Train";
@@ -168,6 +164,34 @@
             this.loadSingleTemplateToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
             this.loadSingleTemplateToolStripMenuItem.Text = "Load Single Template";
             this.loadSingleTemplateToolStripMenuItem.Click += new System.EventHandler(this.loadSingleTemplateToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(233, 6);
+            // 
+            // loadTrain1ToolStripMenuItem
+            // 
+            this.loadTrain1ToolStripMenuItem.Name = "loadTrain1ToolStripMenuItem";
+            this.loadTrain1ToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
+            this.loadTrain1ToolStripMenuItem.Text = "Load Test Case 1";
+            this.loadTrain1ToolStripMenuItem.Click += new System.EventHandler(this.loadTrain1ToolStripMenuItem_Click);
+            // 
+            // loadTestCase2ToolStripMenuItem
+            // 
+            this.loadTestCase2ToolStripMenuItem.Enabled = false;
+            this.loadTestCase2ToolStripMenuItem.Name = "loadTestCase2ToolStripMenuItem";
+            this.loadTestCase2ToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
+            this.loadTestCase2ToolStripMenuItem.Text = "Load Test Case 2";
+            this.loadTestCase2ToolStripMenuItem.Click += new System.EventHandler(this.loadTestCase2ToolStripMenuItem_Click);
+            // 
+            // loadTestCase3ToolStripMenuItem
+            // 
+            this.loadTestCase3ToolStripMenuItem.Enabled = false;
+            this.loadTestCase3ToolStripMenuItem.Name = "loadTestCase3ToolStripMenuItem";
+            this.loadTestCase3ToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
+            this.loadTestCase3ToolStripMenuItem.Text = "Load Test Case 3";
+            this.loadTestCase3ToolStripMenuItem.Click += new System.EventHandler(this.loadTestCase3ToolStripMenuItem_Click);
             // 
             // modesToolStripMenuItem
             // 
@@ -441,30 +465,34 @@
             this.label6.TabIndex = 17;
             this.label6.Text = "DB Current Size:";
             // 
-            // loadTestCase2ToolStripMenuItem
+            // Label_RemoveSilence
             // 
-            this.loadTestCase2ToolStripMenuItem.Name = "loadTestCase2ToolStripMenuItem";
-            this.loadTestCase2ToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
-            this.loadTestCase2ToolStripMenuItem.Text = "Load Test Case 2";
-            this.loadTestCase2ToolStripMenuItem.Click += new System.EventHandler(this.loadTestCase2ToolStripMenuItem_Click);
+            this.Label_RemoveSilence.AutoSize = true;
+            this.Label_RemoveSilence.ForeColor = System.Drawing.Color.Green;
+            this.Label_RemoveSilence.Location = new System.Drawing.Point(345, 251);
+            this.Label_RemoveSilence.Name = "Label_RemoveSilence";
+            this.Label_RemoveSilence.Size = new System.Drawing.Size(38, 17);
+            this.Label_RemoveSilence.TabIndex = 20;
+            this.Label_RemoveSilence.Text = "True";
+            this.Label_RemoveSilence.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // loadTestCase3ToolStripMenuItem
+            // button1
             // 
-            this.loadTestCase3ToolStripMenuItem.Name = "loadTestCase3ToolStripMenuItem";
-            this.loadTestCase3ToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
-            this.loadTestCase3ToolStripMenuItem.Text = "Load Test Case 3";
-            this.loadTestCase3ToolStripMenuItem.Click += new System.EventHandler(this.loadTestCase3ToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(233, 6);
+            this.button1.Location = new System.Drawing.Point(219, 248);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(120, 23);
+            this.button1.TabIndex = 21;
+            this.button1.Text = "Remove Silence";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(404, 278);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.Label_RemoveSilence);
             this.Controls.Add(this.Label_DBSize);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.Label_shiftSize);
@@ -540,5 +568,7 @@
         private System.Windows.Forms.ToolStripMenuItem loadTestCase2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem loadTestCase3ToolStripMenuItem;
+        private System.Windows.Forms.Label Label_RemoveSilence;
+        private System.Windows.Forms.Button button1;
     }
 }

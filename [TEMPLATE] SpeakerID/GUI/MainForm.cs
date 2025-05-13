@@ -46,6 +46,8 @@ namespace Recorder
 
         private bool useSyncSearch;
         private int shiftSize;
+
+        private bool removeSilence;
         // ============================ Our Added Variables =============================
 
         public MainForm()
@@ -125,6 +127,19 @@ namespace Recorder
 
             useSyncSearch = false;
             shiftSize = 0;
+
+            removeSilence = false;
+
+            if (removeSilence)
+            {
+                Label_RemoveSilence.Text = "True";
+                Label_RemoveSilence.ForeColor = Color.Green;
+            }
+            else
+            {
+                Label_RemoveSilence.Text = "False";
+                Label_RemoveSilence.ForeColor = Color.Red;
+            }
 
             UpdateModesStatus("pruning");
             UpdateModesStatus("TSS");
@@ -336,7 +351,10 @@ namespace Recorder
                 path = open.FileName;
                 //Open the selected audio file
                 signal = AudioOperations.OpenAudioFile(path);
-                signal = AudioOperations.RemoveSilence(signal);
+
+                if (removeSilence)
+                    signal = AudioOperations.RemoveSilence(signal);
+                
                 seq = AudioOperations.ExtractFeatures(signal);
                 for (int i = 0; i < seq.Frames.Length; i++)
                 {
@@ -523,7 +541,9 @@ namespace Recorder
             AudioSignal audio;
 
             audio = AudioOperations.OpenAudioFile(path);
-            //audio = AudioOperations.RemoveSilence(audio);
+
+            if (removeSilence)
+                audio = AudioOperations.RemoveSilence(audio);
 
             User u1 = new User();
 
@@ -657,6 +677,22 @@ namespace Recorder
         private void MainFormFormClosed(object sender, FormClosedEventArgs e)
         {
             Stop();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            removeSilence = !removeSilence;
+
+            if (removeSilence)
+            {
+                Label_RemoveSilence.Text = "True";
+                Label_RemoveSilence.ForeColor = Color.Green;
+            }
+            else
+            {
+                Label_RemoveSilence.Text = "False";
+                Label_RemoveSilence.ForeColor = Color.Red;
+            }
         }
     }
 }
