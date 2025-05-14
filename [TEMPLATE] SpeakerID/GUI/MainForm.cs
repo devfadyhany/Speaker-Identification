@@ -38,8 +38,8 @@ namespace Recorder
 
 
         // ============================ Our Added Variables =============================
-        private List<User> templateData;
-        private List<User> testData;
+        private static List<User> templateData = new List<User>();
+        private static List<User> testData;
 
         private bool usePruning;
         private int pruningWidth;
@@ -48,6 +48,8 @@ namespace Recorder
         private int shiftSize;
 
         private bool removeSilence;
+
+        List<double> buffer = new List<double>();
         // ============================ Our Added Variables =============================
 
         public MainForm()
@@ -230,9 +232,58 @@ namespace Recorder
         /// 
         private void source_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
-            this.encoder.addNewFrame(eventArgs.Signal);
-            updateWaveform(this.encoder.current, eventArgs.Signal.Length);
-       }
+            Signal newSignal = eventArgs.Signal;
+
+            this.encoder.addNewFrame(newSignal);
+            updateWaveform(this.encoder.current, newSignal.Length);
+
+            //===================== Our Code ===============================
+            if (!useSyncSearch)
+                return;
+
+            buffer.AddRange(newSignal.ToDouble());
+
+            int requiredSamples = newSignal.SampleRate * 2;
+            if (buffer.Count >= requiredSamples)
+            {
+                AudioSignal newAudioSignal = new AudioSignal();
+                newAudioSignal.data = newSignal.ToDouble();
+                newAudioSignal.sampleRate = newSignal.SampleRate;
+
+                buffer.Clear();
+
+                BackgroundWorker worker = new BackgroundWorker();
+                worker.DoWork += (s, args) =>
+                {
+                    Console.WriteLine("searching...");
+                    string speaker = UserIdentification.Time_Sync_Search(newAudioSignal);
+                    Console.WriteLine("speaker: " + speaker);
+
+                    args.Result = speaker;
+                };
+
+                worker.RunWorkerCompleted += (s, args) =>
+                {
+                    string speaker = args.Result as string;
+                    //Label_Speaker.Text = speaker;
+
+                    if (Label_Speaker.InvokeRequired)
+                    {
+                        Label_Speaker.Invoke(new MethodInvoker(() =>
+                        {
+                            Label_Speaker.Text = speaker;
+                        }));
+                    }
+                    else
+                    {
+                        Label_Speaker.Text = speaker;
+                    }
+                };
+
+                worker.RunWorkerAsync();
+            }
+            //===================== Our Code ===============================
+        }
 
 
         /// <summary>
@@ -344,32 +395,40 @@ namespace Recorder
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog open = new OpenFileDialog();
-            if (open.ShowDialog() == DialogResult.OK)
+            try
             {
-                isRecorded = false;
-                path = open.FileName;
-                //Open the selected audio file
-                signal = AudioOperations.OpenAudioFile(path);
+                OpenFileDialog open = new OpenFileDialog();
 
-                if (removeSilence)
-                    signal = AudioOperations.RemoveSilence(signal);
-                
-                seq = AudioOperations.ExtractFeatures(signal);
-                for (int i = 0; i < seq.Frames.Length; i++)
+                if (open.ShowDialog() == DialogResult.OK)
                 {
-                    for (int j = 0; j < 13; j++)
+                    isRecorded = false;
+                    path = open.FileName;
+                    //Open the selected audio file
+                    signal = AudioOperations.OpenAudioFile(path);
+
+                    if (removeSilence)
+                        signal = AudioOperations.RemoveSilence(signal);
+
+                    seq = AudioOperations.ExtractFeatures(signal);
+                    for (int i = 0; i < seq.Frames.Length; i++)
                     {
+                        for (int j = 0; j < 13; j++)
+                        {
 
-                        if (double.IsNaN(seq.Frames[i].Features[j]) || double.IsInfinity(seq.Frames[i].Features[j]))
-                            throw new Exception("NaN");
+                            if (double.IsNaN(seq.Frames[i].Features[j]) || double.IsInfinity(seq.Frames[i].Features[j]))
+                                throw new Exception("NaN");
+                        }
                     }
-                }
-                updateButtons();
+                    updateButtons();
 
+                }
+            }
+            catch (Exception exp)
+            {
+                return;
             }
         }
-
+        
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveFileDialog1.ShowDialog(this);
@@ -387,8 +446,8 @@ namespace Recorder
         private void clearMemoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UserIdentification.DB = null;
-            this.templateData = null;
-            this.testData = null;
+            templateData = new List<User>();
+            testData = new List<User>();
             btnIdentify.Enabled = false;
 
             UpdateDBSize();
@@ -405,39 +464,46 @@ namespace Recorder
 
         private void loadTrain1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Title = "Choose Training Set";
-            fileDialog.ShowDialog();
-
-            this.templateData = TestcaseLoader.LoadTestcase1Training(fileDialog.FileName);
-
-            MessageBox.Show("Training data loaded successfully!");
-
-            OpenFileDialog fileDialog2 = new OpenFileDialog();
-            fileDialog2.Title = "Choose Test Set";
-            fileDialog2.ShowDialog();
-
-            this.testData = TestcaseLoader.LoadTestcase1Testing(fileDialog2.FileName);
-
-            this.testData = this.templateData;
-
-            MessageBox.Show("Test data loaded successfully!");
-
-            //UserIdentification.IdentifyList(this.testData, this.templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
-
-            BackgroundWorker worker = new BackgroundWorker();
-            worker.DoWork += (s, args) =>
+            try
             {
-                UserIdentification.IdentifyList(this.testData, this.templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
-            };
+                OpenFileDialog fileDialog = new OpenFileDialog();
+                fileDialog.Title = "Choose Training Set";
+                fileDialog.ShowDialog();
 
-            worker.RunWorkerCompleted += (s, args) =>
+                templateData = TestcaseLoader.LoadTestcase1Training(fileDialog.FileName);
+
+                MessageBox.Show("Training data loaded successfully!");
+
+                OpenFileDialog fileDialog2 = new OpenFileDialog();
+                fileDialog2.Title = "Choose Test Set";
+                fileDialog2.ShowDialog();
+
+                testData = TestcaseLoader.LoadTestcase1Testing(fileDialog2.FileName);
+
+                testData = templateData;
+
+                MessageBox.Show("Test data loaded successfully!");
+
+                //UserIdentification.IdentifyList(this.testData, this.templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+
+                BackgroundWorker worker = new BackgroundWorker();
+                worker.DoWork += (s, args) =>
+                {
+                    UserIdentification.IdentifyList(testData, templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+                };
+
+                worker.RunWorkerCompleted += (s, args) =>
+                {
+                    btnIdentify.Enabled = true;
+                    UpdateDBSize();
+                };
+
+                worker.RunWorkerAsync();
+            }
+            catch(Exception exp)
             {
-                btnIdentify.Enabled = true;
-                UpdateDBSize();
-            };
-
-            worker.RunWorkerAsync();
+                return;
+            }
         }
 
         private void loadTestCase2ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -446,7 +512,7 @@ namespace Recorder
             fileDialog.Title = "Choose Training Set";
             fileDialog.ShowDialog();
 
-            this.templateData = TestcaseLoader.LoadTestcase2Training(fileDialog.FileName);
+            templateData = TestcaseLoader.LoadTestcase2Training(fileDialog.FileName);
 
             MessageBox.Show("Training data loaded successfully!");
 
@@ -454,9 +520,9 @@ namespace Recorder
             fileDialog2.Title = "Choose Test Set";
             fileDialog2.ShowDialog();
 
-            this.testData = TestcaseLoader.LoadTestcase2Testing(fileDialog2.FileName);
+            testData = TestcaseLoader.LoadTestcase2Testing(fileDialog2.FileName);
 
-            this.testData = this.templateData;
+            testData = templateData;
 
             MessageBox.Show("Test data loaded successfully!");
 
@@ -465,7 +531,7 @@ namespace Recorder
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (s, args) =>
             {
-                UserIdentification.IdentifyList(this.testData, this.templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+                UserIdentification.IdentifyList(testData, templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
             };
 
             worker.RunWorkerCompleted += (s, args) =>
@@ -483,7 +549,7 @@ namespace Recorder
             fileDialog.Title = "Choose Training Set";
             fileDialog.ShowDialog();
 
-            this.templateData = TestcaseLoader.LoadTestcase3Training(fileDialog.FileName);
+            templateData = TestcaseLoader.LoadTestcase3Training(fileDialog.FileName);
 
             MessageBox.Show("Training data loaded successfully!");
 
@@ -491,9 +557,9 @@ namespace Recorder
             fileDialog2.Title = "Choose Test Set";
             fileDialog2.ShowDialog();
 
-            this.testData = TestcaseLoader.LoadTestcase3Testing(fileDialog2.FileName);
+            testData = TestcaseLoader.LoadTestcase3Testing(fileDialog2.FileName);
 
-            this.testData = this.templateData;
+            testData = templateData;
 
             MessageBox.Show("Test data loaded successfully!");
 
@@ -502,7 +568,7 @@ namespace Recorder
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (s, args) =>
             {
-                UserIdentification.IdentifyList(this.testData, this.templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+                UserIdentification.IdentifyList(testData, templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
             };
 
             worker.RunWorkerCompleted += (s, args) =>
@@ -519,7 +585,7 @@ namespace Recorder
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.ShowDialog();
 
-            this.templateData = TestcaseLoader.LoadSampleTrainingTest(fileDialog.FileName);
+            templateData = TestcaseLoader.LoadSampleTrainingTest(fileDialog.FileName);
 
             MessageBox.Show("Sample Training data loaded successfully!");
 
@@ -530,34 +596,41 @@ namespace Recorder
 
         private void loadSingleTemplateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.ShowDialog();
+            try
+            {
+                OpenFileDialog fileDialog = new OpenFileDialog();
+                fileDialog.Multiselect = true;
+                fileDialog.Filter = "Audio Files (*.wav;*.mp3)|*.wav;*.mp3|All Files (*.*)|*.*";
+                fileDialog.ShowDialog();
 
-            string path = fileDialog.FileName;
-            string[] splittedPath = path.Split('\\');
+                foreach (string path in fileDialog.FileNames)
+                {
+                    string[] splittedPath = path.Split('\\');
+                    string fileName = splittedPath[splittedPath.Length - 1];
 
-            this.templateData = new List<User>();
+                    AudioSignal audio = AudioOperations.OpenAudioFile(path);
 
-            AudioSignal audio;
+                    if (removeSilence)
+                        audio = AudioOperations.RemoveSilence(audio);
 
-            audio = AudioOperations.OpenAudioFile(path);
+                    User u1 = new User
+                    {
+                        UserName = fileName,
+                        UserTemplates = new List<AudioSignal> { audio }
+                    };
 
-            if (removeSilence)
-                audio = AudioOperations.RemoveSilence(audio);
+                    templateData.Add(u1);
+                }
 
-            User u1 = new User();
+                MessageBox.Show("Templates loaded successfully!");
 
-            u1.UserName = splittedPath[splittedPath.Length - 1];
-            u1.UserTemplates = new List<AudioSignal>();
-            u1.UserTemplates.Add(audio);
-
-            this.templateData.Add(u1);
-
-            MessageBox.Show("Template loaded successfully!");
-
-            btnIdentify.Enabled = true;
-
-            UpdateDBSize();
+                btnIdentify.Enabled = true;
+                UpdateDBSize();
+            }
+            catch (Exception exp)
+            {
+                return;
+            }
         }
 
         #endregion
@@ -650,7 +723,7 @@ namespace Recorder
             }
 
             // ======================== Our Code ==============================
-            btnIdentify.Enabled = this.templateData != null && btnPlay.Enabled == true;
+            btnIdentify.Enabled = templateData.Count != 0 && btnPlay.Enabled == true;
             // ======================== Our Code ==============================
         }
 
@@ -667,9 +740,24 @@ namespace Recorder
         {
             btnIdentify.Enabled = false;
 
-            UserIdentification.IdentifyVoice(seq, this.templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+            Label_Speaker.Text = "Loading...";
 
-            btnIdentify.Enabled = true;
+            string matchedUser = "";
+
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += (s, args) =>
+            {
+                User identifiedUser = UserIdentification.IdentifyVoice(seq, templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+                matchedUser = identifiedUser.UserName;
+            };
+
+            worker.RunWorkerCompleted += (s, args) =>
+            {
+                Label_Speaker.Text = matchedUser;
+                btnIdentify.Enabled = true;
+            };
+
+            worker.RunWorkerAsync();
         }
 
         private void button1_Click(object sender, EventArgs e)

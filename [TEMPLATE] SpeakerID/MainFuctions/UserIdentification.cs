@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Recorder
 {
@@ -124,13 +125,13 @@ namespace Recorder
 
                     Stopwatch stopwatch;
                     
-                    if (with_syncSearch)
-                    {
-                        stopwatch = Stopwatch.StartNew();
-                        distance = SequenceMatching.Sync_Search(testSequence, trainSequence, testFrameCount, trainFrameCount, shiftSize);
+                    //if (with_syncSearch)
+                    //{
+                        //stopwatch = Stopwatch.StartNew();
+                        //distance = SequenceMatching.Sync_Search(testSequence, trainSequence, testFrameCount, trainFrameCount, shiftSize);
 
-                    }
-                    else if (with_pruning)
+                    //}
+                    if (with_pruning)
                     {
                         stopwatch = Stopwatch.StartNew();
                         distance = SequenceMatching.DTW_Pruning(testSequence, trainSequence, testFrameCount, trainFrameCount, pruning_width);
@@ -228,5 +229,61 @@ namespace Recorder
             MessageBox.Show("Test Accuracy: " + accuracy + "%" 
                         + "\nExecution Time: " + totalTime.ElapsedMilliseconds + " ms");
         }
+
+        #region Bonus Functions
+
+        public static string Time_Sync_Search(AudioSignal signal)
+        {
+            Sequence inputSequence = AudioOperations.ExtractFeatures(signal);
+
+            if (existSequence.ContainsKey(inputSequence))
+                return existSequence[inputSequence].UserName;
+
+            string bestUser = "";
+            double bestDistance = double.MaxValue;
+
+            object lockObj = new object();
+
+            Parallel.ForEach(DB, trainUser =>
+            {
+                foreach (AudioSignal trainSignal in trainUser.UserTemplates)
+                {
+                    Sequence trainSequence;
+
+                    if (templateSequences.ContainsKey(trainSignal))
+                    {
+                        trainSequence = templateSequences[trainSignal];
+                    }
+                    else
+                    {
+                        trainSequence = MFCC.MFCC.ExtractFeatures(trainSignal.data, trainSignal.sampleRate);
+                        lock (templateSequences)
+                        {
+                            templateSequences[trainSignal] = trainSequence;
+                        }
+                    }
+
+                    int N = inputSequence.Frames.Length;
+                    int M = trainSequence.Frames.Length;
+
+                    double distance = SequenceMatching.DTW_NoPruning(inputSequence, trainSequence, N, M);
+
+                    lock (lockObj)
+                    {
+                        if (distance < bestDistance)
+                        {
+                            bestDistance = distance;
+                            bestUser = trainUser.UserName;
+
+                            Console.WriteLine("best user so far: " + bestUser);
+                        }
+                    }
+                }
+            });
+
+            return bestUser;
+        }
+
+        #endregion
     }
 }

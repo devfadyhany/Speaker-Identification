@@ -210,3 +210,4 @@ C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] Speak
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.CopyComplete
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.exe
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.pdb
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.AssemblyReference.cache

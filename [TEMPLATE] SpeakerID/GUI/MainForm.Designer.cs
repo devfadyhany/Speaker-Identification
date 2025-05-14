@@ -75,6 +75,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.Label_RemoveSilence = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.Label_Speaker = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
@@ -154,26 +155,26 @@
             // 
             this.loadToolStripMenuItem.Enabled = false;
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.loadToolStripMenuItem.Text = "Load Sample Train";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
             // loadSingleTemplateToolStripMenuItem
             // 
             this.loadSingleTemplateToolStripMenuItem.Name = "loadSingleTemplateToolStripMenuItem";
-            this.loadSingleTemplateToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
-            this.loadSingleTemplateToolStripMenuItem.Text = "Load Single Template";
+            this.loadSingleTemplateToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.loadSingleTemplateToolStripMenuItem.Text = "Load Template(s)";
             this.loadSingleTemplateToolStripMenuItem.Click += new System.EventHandler(this.loadSingleTemplateToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(233, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(221, 6);
             // 
             // loadTrain1ToolStripMenuItem
             // 
             this.loadTrain1ToolStripMenuItem.Name = "loadTrain1ToolStripMenuItem";
-            this.loadTrain1ToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
+            this.loadTrain1ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.loadTrain1ToolStripMenuItem.Text = "Load Test Case 1";
             this.loadTrain1ToolStripMenuItem.Click += new System.EventHandler(this.loadTrain1ToolStripMenuItem_Click);
             // 
@@ -181,7 +182,7 @@
             // 
             this.loadTestCase2ToolStripMenuItem.Enabled = false;
             this.loadTestCase2ToolStripMenuItem.Name = "loadTestCase2ToolStripMenuItem";
-            this.loadTestCase2ToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
+            this.loadTestCase2ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.loadTestCase2ToolStripMenuItem.Text = "Load Test Case 2";
             this.loadTestCase2ToolStripMenuItem.Click += new System.EventHandler(this.loadTestCase2ToolStripMenuItem_Click);
             // 
@@ -189,7 +190,7 @@
             // 
             this.loadTestCase3ToolStripMenuItem.Enabled = false;
             this.loadTestCase3ToolStripMenuItem.Name = "loadTestCase3ToolStripMenuItem";
-            this.loadTestCase3ToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
+            this.loadTestCase3ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.loadTestCase3ToolStripMenuItem.Text = "Load Test Case 3";
             this.loadTestCase3ToolStripMenuItem.Click += new System.EventHandler(this.loadTestCase3ToolStripMenuItem_Click);
             // 
@@ -213,7 +214,6 @@
             // 
             // TB_pruningWidth
             // 
-            this.TB_pruningWidth.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.TB_pruningWidth.Name = "TB_pruningWidth";
             this.TB_pruningWidth.Size = new System.Drawing.Size(100, 27);
             this.TB_pruningWidth.Text = "20";
@@ -230,7 +230,6 @@
             // 
             // TB_shiftSize
             // 
-            this.TB_shiftSize.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.TB_shiftSize.Name = "TB_shiftSize";
             this.TB_shiftSize.Size = new System.Drawing.Size(100, 27);
             this.TB_shiftSize.Text = "0";
@@ -486,11 +485,21 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // Label_Speaker
+            // 
+            this.Label_Speaker.AutoSize = true;
+            this.Label_Speaker.Location = new System.Drawing.Point(12, 337);
+            this.Label_Speaker.Name = "Label_Speaker";
+            this.Label_Speaker.Size = new System.Drawing.Size(122, 17);
+            this.Label_Speaker.TabIndex = 22;
+            this.Label_Speaker.Text = "Identified Speaker";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(404, 278);
+            this.ClientSize = new System.Drawing.Size(404, 363);
+            this.Controls.Add(this.Label_Speaker);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.Label_RemoveSilence);
             this.Controls.Add(this.Label_DBSize);
@@ -570,5 +579,6 @@
         private System.Windows.Forms.ToolStripMenuItem loadTestCase3ToolStripMenuItem;
         private System.Windows.Forms.Label Label_RemoveSilence;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label Label_Speaker;
     }
 }

@@ -132,38 +132,6 @@ namespace Recorder
         }
 
         #region BonusFunctions
-        public static double Sync_Search(Sequence input, Sequence template, int N, int M, int shiftSize=0)
-        {
-            // TODO: Implement Time Synchronous Search.
-            if (input == template)
-                return 0;
-
-            int smallerSequenceSize = Math.Min(N, M);
-
-            double totalDistance = 0;
-
-            for (int i = 0; i < smallerSequenceSize; i++)
-            {
-                double minDistance = double.MaxValue;
-
-                for (int shift = -shiftSize; shift <= shiftSize; shift++)
-                {
-                    int j = i + shift;
-
-                    if (j >= 0 && j < M)
-                    {
-                        double eculadianDistance = CompareFrames(input.Frames[i], template.Frames[j]);
-                        
-                        if (eculadianDistance < minDistance)
-                            minDistance = eculadianDistance;
-                    }
-                }
-
-                totalDistance += minDistance;
-            }
-
-            return totalDistance;
-        }
 
         public static void BeamSearch()
         {
