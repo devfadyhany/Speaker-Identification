@@ -54,7 +54,9 @@ namespace Recorder
 
         public static List<User> DB = new List<User>();
         private static Dictionary<AudioSignal, Sequence> templateSequences = new Dictionary<AudioSignal, Sequence>();
-        private static Dictionary<Sequence, User> existSequence = new Dictionary<Sequence, User>(); 
+        private static Dictionary<Sequence, User> existSequence = new Dictionary<Sequence, User>();
+
+        private static bool matchLock = false;
 
         public static void AddVoice(string name, AudioSignal myaudio)
         {
@@ -232,19 +234,20 @@ namespace Recorder
 
         #region Bonus Functions
 
-        public static string Time_Sync_Search(AudioSignal signal)
+        public static string Time_Sync_Search(AudioSignal signal, List<User> templateDB)
         {
             Sequence inputSequence = AudioOperations.ExtractFeatures(signal);
 
             if (existSequence.ContainsKey(inputSequence))
                 return existSequence[inputSequence].UserName;
 
+            if (templateDB != null)
+                DB = templateDB;
+
             string bestUser = "";
             double bestDistance = double.MaxValue;
 
-            object lockObj = new object();
-
-            Parallel.ForEach(DB, trainUser =>
+            foreach (User trainUser in DB)
             {
                 foreach (AudioSignal trainSignal in trainUser.UserTemplates)
                 {
@@ -257,29 +260,26 @@ namespace Recorder
                     else
                     {
                         trainSequence = MFCC.MFCC.ExtractFeatures(trainSignal.data, trainSignal.sampleRate);
-                        lock (templateSequences)
-                        {
-                            templateSequences[trainSignal] = trainSequence;
-                        }
+                        templateSequences[trainSignal] = trainSequence;
                     }
 
                     int N = inputSequence.Frames.Length;
                     int M = trainSequence.Frames.Length;
 
+                    while (matchLock) { }
+
+                    matchLock = true;
                     double distance = SequenceMatching.DTW_NoPruning(inputSequence, trainSequence, N, M);
+                    matchLock = false;
+                    
 
-                    lock (lockObj)
+                    if (distance <= bestDistance)
                     {
-                        if (distance < bestDistance)
-                        {
-                            bestDistance = distance;
-                            bestUser = trainUser.UserName;
-
-                            Console.WriteLine("best user so far: " + bestUser);
-                        }
+                        bestDistance = distance;
+                        bestUser = trainUser.UserName;
                     }
                 }
-            });
+            }
 
             return bestUser;
         }

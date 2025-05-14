@@ -256,7 +256,7 @@ namespace Recorder
                 worker.DoWork += (s, args) =>
                 {
                     Console.WriteLine("searching...");
-                    string speaker = UserIdentification.Time_Sync_Search(newAudioSignal);
+                    string speaker = UserIdentification.Time_Sync_Search(newAudioSignal, templateData);
                     Console.WriteLine("speaker: " + speaker);
 
                     args.Result = speaker;
