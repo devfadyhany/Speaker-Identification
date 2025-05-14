@@ -219,12 +219,6 @@ namespace Recorder
             {
                 string line = reader.ReadLine();
 
-                if (line == null)
-                {
-                    Console.WriteLine(filename);
-                    break;
-                }
-
                 var splittedLine = line.Split(' ');
                 if (splittedLine[0] == "sample_count")
                 {
