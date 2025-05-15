@@ -633,6 +633,45 @@ namespace Recorder
             }
         }
 
+        private void loadUserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+                folderDialog.ShowDialog();
+
+                string selectedFolder = folderDialog.SelectedPath;
+                string userName = new DirectoryInfo(selectedFolder).Name;
+                string[] audioFiles = Directory.GetFiles(selectedFolder, "*.wav");
+
+                List<AudioSignal> templates = new List<AudioSignal>();
+
+                foreach (string audioPath in audioFiles)
+                {
+                    AudioSignal audio = AudioOperations.OpenAudioFile(audioPath);
+                    if (removeSilence)
+                        audio = AudioOperations.RemoveSilence(audio);
+                    templates.Add(audio);
+                }
+
+                if (templates.Count > 0)
+                {
+                    User u = new User
+                    {
+                        UserName = userName,
+                        UserTemplates = templates
+                    };
+
+                    templateData.Add(u);
+                }
+            }
+            catch (Exception exp)
+            {
+                return;
+            }
+            
+        }
+
         #endregion
 
         #region Modes Menu
@@ -733,7 +772,28 @@ namespace Recorder
 
             string[] splittedString = saveFileDialog1.FileName.Split('\\');
 
-            UserIdentification.AddVoice(splittedString[splittedString.Length - 2], signal);
+            string name = splittedString[splittedString.Length - 2];
+
+            foreach (User existUser in templateData)
+            {
+                if (existUser.UserName == name)
+                {
+                    existUser.UserTemplates.Add(signal);
+                    MessageBox.Show("New audio has been added successfully to (" + existUser.UserName + ")!");
+                    return;
+                }
+            }
+
+            User newUser = new User();
+
+            newUser.UserName = name;
+            newUser.UserTemplates = new List<AudioSignal>() { signal };
+
+            templateData.Add(newUser);
+
+            UpdateDBSize();
+
+            MessageBox.Show("New user (" + newUser.UserName + ") has been added successfully!");
         }
 
         private void btnIdentify_Click(object sender, EventArgs e)

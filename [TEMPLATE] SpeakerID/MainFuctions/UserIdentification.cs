@@ -93,7 +93,6 @@ namespace Recorder
             int testFrameCount = testSequence.Frames.Count();
 
             User bestUser = new User();
-            //string bestUser = "";
             double bestDistance = double.MaxValue;
 
             foreach (User trainUser in DB)
@@ -127,12 +126,7 @@ namespace Recorder
 
                     Stopwatch stopwatch;
                     
-                    //if (with_syncSearch)
-                    //{
-                        //stopwatch = Stopwatch.StartNew();
-                        //distance = SequenceMatching.Sync_Search(testSequence, trainSequence, testFrameCount, trainFrameCount, shiftSize);
 
-                    //}
                     if (with_pruning)
                     {
                         stopwatch = Stopwatch.StartNew();
@@ -273,7 +267,7 @@ namespace Recorder
                     matchLock = false;
                     
 
-                    if (distance <= bestDistance)
+                    if (distance < bestDistance)
                     {
                         bestDistance = distance;
                         bestUser = trainUser.UserName;

@@ -76,6 +76,7 @@
             this.Label_RemoveSilence = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.Label_Speaker = new System.Windows.Forms.Label();
+            this.loadUserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
@@ -142,6 +143,7 @@
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadToolStripMenuItem,
+            this.loadUserToolStripMenuItem,
             this.loadSingleTemplateToolStripMenuItem,
             this.toolStripSeparator2,
             this.loadTrain1ToolStripMenuItem,
@@ -214,6 +216,7 @@
             // 
             // TB_pruningWidth
             // 
+            this.TB_pruningWidth.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.TB_pruningWidth.Name = "TB_pruningWidth";
             this.TB_pruningWidth.Size = new System.Drawing.Size(100, 27);
             this.TB_pruningWidth.Text = "20";
@@ -230,6 +233,7 @@
             // 
             // TB_shiftSize
             // 
+            this.TB_shiftSize.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.TB_shiftSize.Name = "TB_shiftSize";
             this.TB_shiftSize.Size = new System.Drawing.Size(100, 27);
             this.TB_shiftSize.Text = "0";
@@ -494,6 +498,13 @@
             this.Label_Speaker.TabIndex = 22;
             this.Label_Speaker.Text = "Identified Speaker";
             // 
+            // loadUserToolStripMenuItem
+            // 
+            this.loadUserToolStripMenuItem.Name = "loadUserToolStripMenuItem";
+            this.loadUserToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.loadUserToolStripMenuItem.Text = "Load User";
+            this.loadUserToolStripMenuItem.Click += new System.EventHandler(this.loadUserToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -580,5 +591,6 @@
         private System.Windows.Forms.Label Label_RemoveSilence;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label Label_Speaker;
+        private System.Windows.Forms.ToolStripMenuItem loadUserToolStripMenuItem;
     }
 }
