@@ -60,11 +60,12 @@ namespace Recorder
             if (input == template)
                 return 0;
 
-            pruningWidth /= 2;
-            pruningWidth = Math.Max(pruningWidth, Math.Abs(N - M));
+            // Set pruning width directly to W to ensure O(N*W) complexity
+            pruningWidth = pruningWidth;
 
             double[,] D = new double[N + 1, M + 1];
 
+            // Initialize D with infinity
             for (int i = 0; i <= N; i++)
             {
                 for (int j = 0; j <= M; j++)
@@ -77,6 +78,7 @@ namespace Recorder
 
             for (int i = 1; i <= N; i++)
             {
+                // Define the range of j based on the fixed pruning width W
                 int minJ = Math.Max(1, i - pruningWidth);
                 int maxJ = Math.Min(M, i + pruningWidth);
 
@@ -86,10 +88,7 @@ namespace Recorder
 
                     double stretchCost = D[i - 1, j];
                     double matchCost = D[i - 1, j - 1];
-                    double shrinkCost = double.MaxValue;
-
-                    if (j >= 2)
-                        shrinkCost = D[i - 1, j - 2];
+                    double shrinkCost = j >= 2 ? D[i - 1, j - 2] : double.MaxValue;
 
                     D[i, j] = cost + Math.Min(Math.Min(stretchCost, matchCost), shrinkCost);
                 }
