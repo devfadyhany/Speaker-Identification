@@ -57,6 +57,7 @@ namespace Recorder
         public static double DTW_Pruning(Sequence input, Sequence template, int N, int M, int pruningWidth)
         {
             // TODO: Implement Matching Algorithm with Pruning.
+
             if (input == template)
                 return 0;
 

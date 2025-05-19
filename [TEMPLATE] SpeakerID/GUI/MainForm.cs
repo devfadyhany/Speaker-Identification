@@ -421,6 +421,7 @@ namespace Recorder
                     }
                     updateButtons();
 
+                    MessageBox.Show("Input loaded successfully!");
                 }
             }
             catch (Exception exp)
@@ -449,6 +450,8 @@ namespace Recorder
             templateData = new List<User>();
             testData = new List<User>();
             btnIdentify.Enabled = false;
+            btnPlay.Enabled = false;
+            btnAdd.Enabled = false;
 
             UpdateDBSize();
         }
