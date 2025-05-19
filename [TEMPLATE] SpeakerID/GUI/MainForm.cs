@@ -395,8 +395,8 @@ namespace Recorder
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
+            //try
+            //{
                 OpenFileDialog open = new OpenFileDialog();
 
                 if (open.ShowDialog() == DialogResult.OK)
@@ -423,11 +423,12 @@ namespace Recorder
 
                     MessageBox.Show("Input loaded successfully!");
                 }
-            }
-            catch (Exception exp)
-            {
-                return;
-            }
+            //}
+            //catch (Exception exp)
+            //{
+            //    Console.WriteLine(exp);
+            //    return;
+            //}
         }
         
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)

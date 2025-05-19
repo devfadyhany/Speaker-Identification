@@ -174,40 +174,45 @@ E:\Dropbox\[ALG'15] Materials\---- Staff only ----\Projects\Speaker Identificati
 E:\Dropbox\[ALG'15] Materials\---- Staff only ----\Projects\Speaker Identification\FIX1 - Speaker Identification Startup Code\[TEMPLATE] SpeakerID\bin\Debug\NAudio.dll
 E:\Dropbox\[ALG'15] Materials\---- Staff only ----\Projects\Speaker Identification\FIX1 - Speaker Identification Startup Code\[TEMPLATE] SpeakerID\bin\Debug\NAudio.WindowsMediaFormat.dll
 E:\Dropbox\[ALG'15] Materials\---- Staff only ----\Projects\Speaker Identification\FIX1 - Speaker Identification Startup Code\[TEMPLATE] SpeakerID\bin\Debug\NAudio.xml
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.AssemblyReference.cache
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.exe
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.pdb
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\Recorder.exe
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\Recorder.pdb
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\AForge.dll
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\AForge.Math.dll
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.DirectSound.dll
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.dll
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\AForge.xml
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\AForge.Math.xml
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\NAudio.xml
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.xml
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.DirectSound.xml
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.MainForm.resources
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.Properties.Resources.resources
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.GenerateResource.cache
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.CoreCompileInputs.cache
-C:\MyData\FCIS\3rd Year\second term\analysis and design of algorithms\Project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.CopyComplete
-C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\Recorder.exe
-C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\Recorder.pdb
-C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\AForge.dll
-C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\AForge.Math.dll
-C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.DirectSound.dll
-C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.dll
-C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\AForge.xml
-C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\AForge.Math.xml
-C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.xml
-C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.DirectSound.xml
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\bin\Debug\Recorder.exe
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\bin\Debug\Recorder.pdb
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\bin\Debug\AForge.dll
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\bin\Debug\AForge.Math.dll
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\bin\Debug\MWArray.dll
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.DirectSound.dll
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.dll
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\bin\Debug\AForge.xml
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\bin\Debug\AForge.Math.xml
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\bin\Debug\MWArray.xml
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\bin\Debug\NAudio.xml
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.xml
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.DirectSound.xml
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.AssemblyReference.cache
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.MainForm.resources
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.Properties.Resources.resources
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.GenerateResource.cache
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.CoreCompileInputs.cache
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.CopyComplete
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.exe
+C:\Users\Fady\Desktop\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.pdb
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.AssemblyReference.cache
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.MainForm.resources
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.Properties.Resources.resources
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.GenerateResource.cache
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.CoreCompileInputs.cache
-C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.CopyComplete
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.exe
 C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.pdb
-C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.AssemblyReference.cache
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\Recorder.exe
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\Recorder.pdb
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\AForge.dll
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\AForge.Math.dll
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\MWArray.dll
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.DirectSound.dll
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.dll
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\AForge.xml
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\AForge.Math.xml
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\MWArray.xml
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\NAudio.xml
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.xml
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\bin\Debug\SharpDX.DirectSound.xml
+C:\my-data\fcis\year3\term2\algo\project\Speaker-Identification\[TEMPLATE] SpeakerID\obj\x86\Debug\Recorder.csproj.CopyComplete

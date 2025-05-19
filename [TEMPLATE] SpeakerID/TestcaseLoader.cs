@@ -218,7 +218,6 @@ namespace Recorder
             while (true)
             {
                 string line = reader.ReadLine();
-
                 var splittedLine = line.Split(' ');
                 if (splittedLine[0] == "sample_count")
                 {
