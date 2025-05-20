@@ -49,6 +49,8 @@ namespace Recorder
 
         private bool removeSilence;
 
+        private bool listMode;
+
         List<double> buffer = new List<double>();
         // ============================ Our Added Variables =============================
 
@@ -79,7 +81,6 @@ namespace Recorder
                     {
                         Label_syncSearch.Text = "True";
                         Label_syncSearch.ForeColor = Color.Green;
-                        Label_shiftSize.Text = shiftSize.ToString();
 
                         Label_pruning.Text = "False";
                         Label_pruning.ForeColor = Color.Red;
@@ -89,7 +90,6 @@ namespace Recorder
                     {
                         Label_syncSearch.Text = "False";
                         Label_syncSearch.ForeColor = Color.Red;
-                        Label_shiftSize.Text = "";
                     }
                     break;
                 case "pruning":
@@ -101,7 +101,6 @@ namespace Recorder
 
                         Label_syncSearch.Text = "False";
                         Label_syncSearch.ForeColor = Color.Red;
-                        Label_shiftSize.Text = "";
                     }
                     else
                     {
@@ -113,7 +112,6 @@ namespace Recorder
                 default:
                     Label_syncSearch.Text = "False";
                     Label_syncSearch.ForeColor = Color.Red;
-                    Label_shiftSize.Text = "";
 
                     Label_pruning.Text = "False";
                     Label_pruning.ForeColor = Color.Red;
@@ -124,13 +122,14 @@ namespace Recorder
 
         private void ResetModes()
         {
-            usePruning = false;
-            pruningWidth = 20;
+            usePruning = true;
+            pruningWidth = 333;
 
             useSyncSearch = false;
             shiftSize = 0;
 
-            removeSilence = false;
+            removeSilence = true;
+            listMode = false;
 
             if (removeSilence)
             {
@@ -452,6 +451,7 @@ namespace Recorder
             btnIdentify.Enabled = false;
             btnPlay.Enabled = false;
             btnAdd.Enabled = false;
+            listMode = false;
 
             UpdateDBSize();
         }
@@ -486,6 +486,7 @@ namespace Recorder
                 MessageBox.Show("Test data loaded successfully!");
 
                 btnIdentify.Enabled = true;
+                listMode = true;
             }
             catch(Exception exp)
             {
@@ -690,20 +691,6 @@ namespace Recorder
             UpdateModesStatus("TSS");
         }
 
-        private void toolStripTextBox1_TextChanged_1(object sender, EventArgs e)
-        {
-            try
-            {
-                shiftSize = Convert.ToInt32(TB_shiftSize.Text);
-            }
-            catch (Exception exp)
-            {
-                return;
-            }
-
-            UpdateModesStatus("TSS");
-        }
-
         #endregion
 
         #endregion
@@ -761,26 +748,9 @@ namespace Recorder
 
             string name = splittedString[splittedString.Length - 2];
 
-            foreach (User existUser in templateData)
-            {
-                if (existUser.UserName == name)
-                {
-                    existUser.UserTemplates.Add(signal);
-                    MessageBox.Show("New audio has been added successfully to (" + existUser.UserName + ")!");
-                    return;
-                }
-            }
-
-            User newUser = new User();
-
-            newUser.UserName = name;
-            newUser.UserTemplates = new List<AudioSignal>() { signal };
-
-            templateData.Add(newUser);
+            UserIdentification.AddVoice(name, signal, templateData);
 
             UpdateDBSize();
-
-            MessageBox.Show("New user (" + newUser.UserName + ") has been added successfully!");
         }
 
         private void btnIdentify_Click(object sender, EventArgs e)
@@ -794,8 +764,10 @@ namespace Recorder
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (s, args) =>
             {
-                if (templateData.Count != 0 && testData.Count != 0)
+                if (listMode)
+                {
                     UserIdentification.IdentifyList(testData, templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+                }
                 else
                 {
                     User identifiedUser = UserIdentification.IdentifyVoice(seq, templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);

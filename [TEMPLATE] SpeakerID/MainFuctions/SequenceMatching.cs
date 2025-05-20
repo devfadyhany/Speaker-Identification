@@ -53,13 +53,60 @@ namespace Recorder
         public static double DTW_Pruning(Sequence input, Sequence template, int N, int M, int pruningWidth)
         {
             pruningWidth /= 2;
-            pruningWidth = Math.Max(pruningWidth, 2 * Math.Abs(N - M));
+            pruningWidth = Math.Max(pruningWidth, Math.Abs(N - M));
 
-            Dictionary<string, double> distanceMemo = new Dictionary<string, double>();
+            double[] previousRow = new double[2 * pruningWidth + 1];
+            double[] currentRow = new double[2 * pruningWidth + 1];
 
-            return DTW_Pruning_DP(input, template, N - 1, M - 1, pruningWidth, distanceMemo);
+            for (int i = 0; i < previousRow.Length; i++)
+                previousRow[i] = double.MaxValue;
+
+            previousRow[pruningWidth] = 0;
+
+            for (int i = 1; i <= N; i++)
+            {
+                for (int l = 0; l < currentRow.Length; l++)
+                    currentRow[l] = double.MaxValue;
+
+                int minJ = Math.Max(1, i - pruningWidth);
+                int maxJ = Math.Min(M, i + pruningWidth);
+
+                for (int j = minJ; j <= maxJ; j++)
+                {
+                    int offsetJ = j - (i - pruningWidth);
+                    int offsetPrevious = j - (i - 1 - pruningWidth);
+
+                    double cost = CompareFrames(input.Frames[i - 1], template.Frames[j - 1]);
+
+                    double stretchCost = double.MaxValue, matchCost = double.MaxValue, shrinkCost = double.MaxValue;
+
+                    if (j >= 1)
+                    {
+                        if (offsetPrevious >= 0 && offsetPrevious < previousRow.Length)
+                            stretchCost = previousRow[offsetPrevious];
+
+                        if (offsetPrevious - 1 >= 0 && offsetPrevious - 1 < previousRow.Length)
+                            matchCost = previousRow[offsetPrevious - 1];
+
+                        if (j >= 1 && offsetPrevious - 2 >= 0 && offsetPrevious - 2 < previousRow.Length)
+                            shrinkCost = previousRow[offsetPrevious - 2];
+                    }
+
+                    currentRow[offsetJ] = cost + Math.Min(Math.Min(stretchCost, matchCost), shrinkCost);
+                }
+
+                // Swap rows
+                double[] temp = previousRow;
+                previousRow = currentRow;
+                currentRow = temp;
+            }
+
+            int offsetFinal = M - (N - pruningWidth);
+            if (offsetFinal < 0 || offsetFinal >= previousRow.Length)
+                return double.MaxValue;
+
+            return previousRow[offsetFinal];
         }
-
 
         #region BonusFunctions
 
@@ -90,82 +137,6 @@ namespace Recorder
 
             return sum;
         }
-
-        public static double DTW_Pruning_DP(Sequence input, Sequence template, int i, int j, int pruningWidth, Dictionary<string, double> distanceMemo)
-        {
-            // Base case
-            if (i < 0 || j < 0 || Math.Abs(i - j) > pruningWidth)
-                return double.MaxValue;
-
-            if (i == 0 && j == 0)
-                return CompareFrames(input.Frames[0], template.Frames[0]);
-
-            string key = i.ToString() + "," + j.ToString();
-
-            if (distanceMemo.ContainsKey(key))
-                return distanceMemo[key];
-
-            double cost = CompareFrames(input.Frames[i], template.Frames[j]);
-
-            // D&C
-            double minCost = Math.Min(Math.Min(DTW_Pruning_DP(input, template, i - 1, j, pruningWidth, distanceMemo),
-                                           DTW_Pruning_DP(input, template, i - 1, j - 1, pruningWidth, distanceMemo)),
-                                           DTW_Pruning_DP(input, template, i - 1, j - 2, pruningWidth, distanceMemo));
-
-            distanceMemo[key] = cost + minCost;
-
-            return distanceMemo[key];
-        }
-
-        public static int MinDirection(double a, double b, double c)
-        {
-            if (b <= a && b <= c)
-                return 2;
-
-            if (a <= b && a <= c)
-                return 1;
-
-            return 3;
-        }
-
-        public static double CalcTotalDistance(double[,] dissimilarityMatrix, int N, int M)
-        {
-            int x = N, y = M;
-            double sum = 0;
-
-            while (x > 0 && y > 0)
-            {
-                sum += dissimilarityMatrix[x, y];
-
-                int direction;
-
-                if (y > 1)
-                    direction = MinDirection(dissimilarityMatrix[x - 1, y], dissimilarityMatrix[x - 1, y - 1], dissimilarityMatrix[x - 1, y - 2]);
-                else
-                    direction = 2;
-
-                if (y <= 1 && x == 0)
-                    return sum;
-
-                switch (direction)
-                {
-                    case 1:
-                        x--;
-                        y--;
-                        break;
-                    case 2:
-                        x--;
-                        break;
-                    case 3:
-                        x--;
-                        y -= 2;
-                        break;
-                }
-            }
-
-            return sum;
-        }
-
         #endregion
     }
 }
