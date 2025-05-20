@@ -13,10 +13,6 @@ namespace Recorder
         public static double DTW_NoPruning(Sequence input, Sequence template, int N, int M)
         {
             // TODO: Implement Matching Algorithm without Pruning.
-
-            if (input == template)
-                return 0;
-
             double[,] dissimilarityMatrix = new double[N + 1, M + 1];
 
             dissimilarityMatrix[0, 0] = 0;
@@ -56,54 +52,14 @@ namespace Recorder
 
         public static double DTW_Pruning(Sequence input, Sequence template, int N, int M, int pruningWidth)
         {
-            // TODO: Implement Matching Algorithm with Pruning.
-
-            if (input == template)
-                return 0;
-
             pruningWidth /= 2;
-            pruningWidth = Math.Max(pruningWidth, Math.Abs(N - M));
+            pruningWidth = Math.Max(pruningWidth, 2 * Math.Abs(N - M));
 
-            //Dictionary<(int, int), double> distanceMemo = new Dictionary<(int, int), double>();
+            Dictionary<string, double> distanceMemo = new Dictionary<string, double>();
 
-            //return DTW_Pruning_DP(input, template, N, M, pruningWidth, distanceMemo);
-
-            return 0;
-
-            //double[,] D = new double[N + 1, M + 1];
-
-            //for (int i = 0; i <= N; i++)
-            //{
-            //    for (int j = 0; j <= M; j++)
-            //    {
-            //        D[i, j] = double.MaxValue;
-            //    }
-            //}
-
-            //D[0, 0] = 0;
-
-            //for (int i = 1; i <= N; i++)
-            //{
-            //    int minJ = Math.Max(1, i - pruningWidth);
-            //    int maxJ = Math.Min(M, i + pruningWidth);
-
-            //    for (int j = minJ; j <= maxJ; j++)
-            //    {
-            //        double cost = CompareFrames(input.Frames[i - 1], template.Frames[j - 1]);
-
-            //        double stretchCost = D[i - 1, j];
-            //        double matchCost = D[i - 1, j - 1];
-            //        double shrinkCost = double.MaxValue;
-
-            //        if (j >= 2)
-            //            shrinkCost = D[i - 1, j - 2];
-
-            //        D[i, j] = cost + Math.Min(Math.Min(stretchCost, matchCost), shrinkCost);
-            //    }
-            //}
-
-            //return D[N, M];
+            return DTW_Pruning_DP(input, template, N - 1, M - 1, pruningWidth, distanceMemo);
         }
+
 
         #region BonusFunctions
 
@@ -135,30 +91,31 @@ namespace Recorder
             return sum;
         }
 
-        //public static double DTW_Pruning_DP(Sequence input, Sequence template, int i, int j, int pruningWidth, Dictionary<(int, int), double> distanceMemo)
-        //{
-        //    if (i == 0 && j == 0)
-        //        return 0;
+        public static double DTW_Pruning_DP(Sequence input, Sequence template, int i, int j, int pruningWidth, Dictionary<string, double> distanceMemo)
+        {
+            // Base case
+            if (i < 0 || j < 0 || Math.Abs(i - j) > pruningWidth)
+                return double.MaxValue;
 
-        //    if (i < 0 || j < 0 || Math.Abs(i - j) > pruningWidth)
-        //        return double.MaxValue;
+            if (i == 0 && j == 0)
+                return CompareFrames(input.Frames[0], template.Frames[0]);
 
-        //    if (distanceMemo.ContainsKey((i, j)))
-        //        return distanceMemo[(i, j)];
+            string key = i.ToString() + "," + j.ToString();
 
-        //    double cost = CompareFrames(input.Frames[i - 1], template.Frames[j - 1]);
+            if (distanceMemo.ContainsKey(key))
+                return distanceMemo[key];
 
-        //    double stretchCost = DTW_Pruning_DP(input, template, i - 1, j, pruningWidth, distanceMemo);
-        //    double matchCost = DTW_Pruning_DP(input, template, i - 1, j - 1, pruningWidth, distanceMemo);
-        //    double shrinkCost = double.MaxValue;
+            double cost = CompareFrames(input.Frames[i], template.Frames[j]);
 
-        //    if (j >= 2)
-        //        shrinkCost = DTW_Pruning_DP(input, template, i - 1, j - 2, pruningWidth, distanceMemo);
+            // D&C
+            double minCost = Math.Min(Math.Min(DTW_Pruning_DP(input, template, i - 1, j, pruningWidth, distanceMemo),
+                                           DTW_Pruning_DP(input, template, i - 1, j - 1, pruningWidth, distanceMemo)),
+                                           DTW_Pruning_DP(input, template, i - 1, j - 2, pruningWidth, distanceMemo));
 
-        //    distanceMemo[(i, j)] = cost + Math.Min(Math.Min(stretchCost, matchCost), shrinkCost);
+            distanceMemo[key] = cost + minCost;
 
-        //    return distanceMemo[(i, j)];
-        //}
+            return distanceMemo[key];
+        }
 
         public static int MinDirection(double a, double b, double c)
         {

@@ -447,7 +447,6 @@ namespace Recorder
 
         private void clearMemoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UserIdentification.DB = null;
             templateData = new List<User>();
             testData = new List<User>();
             btnIdentify.Enabled = false;
@@ -484,25 +483,9 @@ namespace Recorder
 
                 testData = TestcaseLoader.LoadTestcase1Testing(fileDialog2.FileName);
 
-                testData = templateData;
-
                 MessageBox.Show("Test data loaded successfully!");
 
-                //UserIdentification.IdentifyList(this.testData, this.templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
-
-                BackgroundWorker worker = new BackgroundWorker();
-                worker.DoWork += (s, args) =>
-                {
-                    UserIdentification.IdentifyList(testData, templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
-                };
-
-                worker.RunWorkerCompleted += (s, args) =>
-                {
-                    btnIdentify.Enabled = true;
-                    UpdateDBSize();
-                };
-
-                worker.RunWorkerAsync();
+                btnIdentify.Enabled = true;
             }
             catch(Exception exp)
             {
@@ -811,8 +794,13 @@ namespace Recorder
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (s, args) =>
             {
-                User identifiedUser = UserIdentification.IdentifyVoice(seq, templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
-                matchedUser = identifiedUser.UserName;
+                if (templateData.Count != 0 && testData.Count != 0)
+                    UserIdentification.IdentifyList(testData, templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+                else
+                {
+                    User identifiedUser = UserIdentification.IdentifyVoice(seq, templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+                    matchedUser = identifiedUser.UserName;
+                }
             };
 
             worker.RunWorkerCompleted += (s, args) =>

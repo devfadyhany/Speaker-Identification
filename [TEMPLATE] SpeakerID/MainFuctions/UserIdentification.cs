@@ -1,6 +1,7 @@
 ﻿using Recorder.MFCC;
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -11,6 +12,8 @@ namespace Recorder
 {
     class UserIdentification
     {
+        #region Requirements
+
         /*
          * Inputs
          * ==========================================
@@ -42,25 +45,16 @@ namespace Recorder
          * the program should determine the name of the user and output it on the screen.
          */
 
-        //static string trainpath = @"C:\\MyData\\FCIS\\3rd Year\\second term\\analysis and design of algorithms\\Project\\Speaker-Identification\\TEST CASES\\[2] COMPLETE\\Complete SpeakerID Dataset\\TrainingList.txt";
-        //public static List<User> training1 = TestcaseLoader.LoadTestcase1Training(trainpath);
-        //public static List<User> training2 = TestcaseLoader.LoadTestcase2Training(trainpath);
-        //static List<User> training3 = TestcaseLoader.LoadTestcase3Training(trainpath);
+        #endregion
 
-        //static string testpath = @"C:\\MyData\\FCIS\\3rd Year\\second term\\analysis and design of algorithms\\Project\\Speaker-Identification\\TEST CASES\\[2] COMPLETE\\Complete SpeakerID Dataset\\TestingList.txt";
-        //public static List<User> testing1 = TestcaseLoader.LoadTestcase1Testing(testpath);
-        //public static List<User> testing2 = TestcaseLoader.LoadTestcase2Testing(testpath);
-        //static List<User> testing2 = TestcaseLoader.LoadTestcase2Testing(testpath);
-
-        public static List<User> DB = new List<User>();
-        private static Dictionary<AudioSignal, Sequence> templateSequences = new Dictionary<AudioSignal, Sequence>();
-        private static Dictionary<Sequence, User> existSequence = new Dictionary<Sequence, User>();
+        public static Dictionary<AudioSignal, Sequence> templateSequences = new Dictionary<AudioSignal, Sequence>();
+        public static Dictionary<Sequence, User> existSequence = new Dictionary<Sequence, User>();
 
         private static bool matchLock = false;
 
-        public static void AddVoice(string name, AudioSignal myaudio)
+        public static void AddVoice(string name, AudioSignal myaudio, List<User> templateDB)
         {
-            foreach (User existUser in DB)
+            foreach (User existUser in templateDB)
             {
                 if (existUser.UserName == name)
                 {
@@ -75,7 +69,7 @@ namespace Recorder
             newUser.UserName = name;
             newUser.UserTemplates = new List<AudioSignal>() { myaudio };
 
-            DB.Add(newUser);
+            templateDB.Add(newUser);
 
             MessageBox.Show("New user (" + newUser.UserName + ") has been added successfully!");
         }
@@ -84,18 +78,14 @@ namespace Recorder
         {
             Stopwatch totalTime = Stopwatch.StartNew();
 
-            if (templateDB != null)
-                DB = templateDB;
-
             long DTW_ONLY_TIME = 0;
-
 
             int testFrameCount = testSequence.Frames.Count();
 
             User bestUser = new User();
             double bestDistance = double.MaxValue;
 
-            foreach (User trainUser in DB)
+            foreach (User trainUser in templateDB)
             {
                 foreach (AudioSignal trainSignal in trainUser.UserTemplates)
                 {
@@ -179,51 +169,62 @@ namespace Recorder
             {
                 foreach (AudioSignal templateSignal in templateUser.UserTemplates)
                 {
-                    Sequence templateSequence = MFCC.MFCC.ExtractFeatures(templateSignal.data, templateSignal.sampleRate);
-                    templateSequences[templateSignal] = templateSequence;
+                    Sequence templateSequence;
+
+                    if (templateSequences.ContainsKey(templateSignal))
+                    {
+                        templateSequence = templateSequences[templateSignal];
+                    }else
+                    {
+                        templateSequence = MFCC.MFCC.ExtractFeatures(templateSignal.data, templateSignal.sampleRate);
+                        templateSequences[templateSignal] = templateSequence;
+                    }
+                    
                     existSequence[templateSequence] = templateUser;
                 }
             }
             trainTime.Stop();
 
-            Console.WriteLine("train time: " + trainTime.ElapsedMilliseconds + " ms");
+            Console.WriteLine("train time: " + ((trainTime.ElapsedMilliseconds / 1000) / 60) + " min");
 
-            List<string> matchedUsers = new List<string>();
-
-            int i = 1;
-
-            foreach (User inputUser in inputDB)
+            int size = 0;
+            foreach (User x in inputDB)
             {
-                foreach (AudioSignal inputSignal in inputUser.UserTemplates)
-                {
-                    Sequence inputSequence;
-                    if (templateSequences.ContainsKey(inputSignal))
-                    {
-                        inputSequence = templateSequences[inputSignal];
-                    }
-                    else
-                    {
-                        inputSequence = MFCC.MFCC.ExtractFeatures(inputSignal.data, inputSignal.sampleRate);
-                        templateSequences[inputSignal] = inputSequence;
-                    }
+                size += x.UserTemplates.Count;
+            }
 
-                    if (existSequence.ContainsKey(inputSequence))
-                        matchedUsers.Add(existSequence[inputSequence].UserName);
-                    else
-                        matchedUsers.Add(IdentifyVoice(inputSequence, templateDB, with_pruning, pruning_width, with_syncSearch, shiftSize, true).UserName);
+            string[] matchedArray = new string[size + 1];
+
+            Parallel.For(0, inputDB.Count, i =>
+            {
+                User inputUser = inputDB[i];
+
+                for (int j = 0; j < inputUser.UserTemplates.Count; j++)
+                {
+                    AudioSignal inputSignal = inputUser.UserTemplates[j];
+
+                    Sequence inputSequence = MFCC.MFCC.ExtractFeatures(inputSignal.data, inputSignal.sampleRate);
+                    matchedArray[(i * inputUser.UserTemplates.Count) + j] = IdentifyVoice(inputSequence, templateDB, with_pruning, pruning_width, with_syncSearch, shiftSize, true).UserName;
                 }
 
                 Console.WriteLine("Checked " + i++);
+            });
+
+            List<string> matchedUsers = new List<string>();
+
+            foreach (string s in matchedArray)
+            {
+                if (s != null)
+                    matchedUsers.Add(s);
             }
 
             totalTime.Stop();
 
             double error = TestcaseLoader.CheckTestcaseAccuracy(inputDB, matchedUsers);
-
             double accuracy = (1 - error) * 100;
 
             MessageBox.Show("Test Accuracy: " + accuracy + "%" 
-                        + "\nExecution Time: " + totalTime.ElapsedMilliseconds + " ms");
+                        + "\nExecution Time: " + ((totalTime.ElapsedMilliseconds / 1000) / 60)  + " min");
         }
 
         #region Bonus Functions
@@ -235,13 +236,10 @@ namespace Recorder
             if (existSequence.ContainsKey(inputSequence))
                 return existSequence[inputSequence].UserName;
 
-            if (templateDB != null)
-                DB = templateDB;
-
             string bestUser = "";
             double bestDistance = double.MaxValue;
 
-            foreach (User trainUser in DB)
+            foreach (User trainUser in templateDB)
             {
                 foreach (AudioSignal trainSignal in trainUser.UserTemplates)
                 {
