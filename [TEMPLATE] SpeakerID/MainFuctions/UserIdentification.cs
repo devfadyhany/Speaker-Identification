@@ -74,7 +74,7 @@ namespace Recorder
             MessageBox.Show("New user (" + newUser.UserName + ") has been added successfully!");
         }
 
-        public static User IdentifyVoice(Sequence testSequence, List<User> templateDB, bool with_pruning = false, int pruning_width = 0, bool with_syncSearch = false, int shiftSize = 0, bool listMode = false)
+        public static User IdentifyVoice(Sequence testSequence, List<User> templateDB, bool with_pruning = false, int pruning_width = 0, bool with_beamSearch = false, int beam_width = 0, bool listMode = false)
         {
             Stopwatch totalTime = Stopwatch.StartNew();
 
@@ -121,6 +121,11 @@ namespace Recorder
                     {
                         stopwatch = Stopwatch.StartNew();
                         distance = SequenceMatching.DTW_Pruning(testSequence, trainSequence, testFrameCount, trainFrameCount, pruning_width);
+                    }
+                    else if (with_beamSearch)
+                    {
+                        stopwatch = Stopwatch.StartNew();
+                        distance = SequenceMatching.BeamSearch(testSequence, trainSequence, testFrameCount, trainFrameCount, beam_width);
                     }
                     else
                     {
@@ -229,7 +234,7 @@ namespace Recorder
 
         #region Bonus Functions
 
-        public static string Time_Sync_Search(AudioSignal signal, List<User> templateDB)
+        public static string Time_Sync_Search(AudioSignal signal, List<User> templateDB, bool usePruning, int pruningWidth, bool useBeam, int beamWidth)
         {
             Sequence inputSequence = AudioOperations.ExtractFeatures(signal);
 
@@ -261,7 +266,14 @@ namespace Recorder
                     while (matchLock) { }
 
                     matchLock = true;
-                    double distance = SequenceMatching.DTW_NoPruning(inputSequence, trainSequence, N, M);
+                    double distance;
+
+                    if (usePruning)
+                        distance = SequenceMatching.DTW_Pruning(inputSequence, trainSequence, N, M, pruningWidth);
+                    if (useBeam)
+                        distance = SequenceMatching.BeamSearch(inputSequence, trainSequence, N, M, beamWidth);
+                    else
+                        distance = SequenceMatching.DTW_NoPruning(inputSequence, trainSequence, N, M);
                     matchLock = false;
                     
 

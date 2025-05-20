@@ -44,6 +44,9 @@ namespace Recorder
         private bool usePruning;
         private int pruningWidth;
 
+        private bool useBeamSearch;
+        private int beamWidth;
+
         private bool useSyncSearch;
         private int shiftSize;
 
@@ -72,6 +75,52 @@ namespace Recorder
 
         #region Helper Functions
 
+        private void EnableMode(string mode)
+        {
+            switch (mode)
+            {
+                case "TSS":
+                    Label_syncSearch.Text = "True";
+                    Label_syncSearch.ForeColor = Color.Green;
+                    break;
+                case "pruning":
+                    Label_pruning.Text = "True";
+                    Label_pruning.ForeColor = Color.Green;
+                    Label_width.Text = pruningWidth.ToString();
+                    break;
+                case "beam":
+                    Label_beam.Text = "True";
+                    Label_beam.ForeColor = Color.Green;
+                    Label_beamWidth.Text = beamWidth.ToString();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void DisableMode(string mode)
+        {
+            switch (mode)
+            {
+                case "TSS":
+                    Label_syncSearch.Text = "False";
+                    Label_syncSearch.ForeColor = Color.Red;
+                    break;
+                case "pruning":
+                    Label_pruning.Text = "False";
+                    Label_pruning.ForeColor = Color.Red;
+                    Label_width.Text = "";
+                    break;
+                case "beam":
+                    Label_beam.Text = "False";
+                    Label_beam.ForeColor = Color.Red;
+                    Label_beamWidth.Text = "";
+                    break;
+                default:
+                    break;
+            }
+        }
+        
         private void UpdateModesStatus(string mode)
         {
             switch (mode)
@@ -79,51 +128,47 @@ namespace Recorder
                 case "TSS":
                     if (useSyncSearch)
                     {
-                        Label_syncSearch.Text = "True";
-                        Label_syncSearch.ForeColor = Color.Green;
-
-                        Label_pruning.Text = "False";
-                        Label_pruning.ForeColor = Color.Red;
-                        Label_width.Text = "";
+                        EnableMode("TSS");
                     }
                     else
                     {
-                        Label_syncSearch.Text = "False";
-                        Label_syncSearch.ForeColor = Color.Red;
+                        DisableMode("TSS");
                     }
                     break;
                 case "pruning":
                     if (usePruning)
                     {
-                        Label_pruning.Text = "True";
-                        Label_pruning.ForeColor = Color.Green;
-                        Label_width.Text = pruningWidth.ToString();
-
-                        Label_syncSearch.Text = "False";
-                        Label_syncSearch.ForeColor = Color.Red;
+                        EnableMode("pruning");
+                        DisableMode("beam");
                     }
                     else
                     {
-                        Label_pruning.Text = "False";
-                        Label_pruning.ForeColor = Color.Red;
-                        Label_width.Text = "";
+                        DisableMode("pruning");
+                    }
+                    break;
+                case "beam":
+                    if (useBeamSearch)
+                    {
+                        EnableMode("beam");
+                        DisableMode("pruning");
+                    }
+                    else
+                    {
+                        DisableMode("beam");
                     }
                     break;
                 default:
-                    Label_syncSearch.Text = "False";
-                    Label_syncSearch.ForeColor = Color.Red;
-
-                    Label_pruning.Text = "False";
-                    Label_pruning.ForeColor = Color.Red;
-                    Label_width.Text = "";
                     break;
             }
         }
 
         private void ResetModes()
         {
-            usePruning = true;
+            usePruning = false;
             pruningWidth = 333;
+
+            useBeamSearch = false;
+            beamWidth = 10;
 
             useSyncSearch = false;
             shiftSize = 0;
@@ -144,6 +189,7 @@ namespace Recorder
 
             UpdateModesStatus("pruning");
             UpdateModesStatus("TSS");
+            UpdateModesStatus("beam");
         }
 
         private void UpdateDBSize()
@@ -255,7 +301,7 @@ namespace Recorder
                 worker.DoWork += (s, args) =>
                 {
                     Console.WriteLine("searching...");
-                    string speaker = UserIdentification.Time_Sync_Search(newAudioSignal, templateData);
+                    string speaker = UserIdentification.Time_Sync_Search(newAudioSignal, templateData, usePruning, pruningWidth, useBeamSearch, beamWidth);
                     Console.WriteLine("speaker: " + speaker);
 
                     args.Result = speaker;
@@ -684,6 +730,27 @@ namespace Recorder
             UpdateModesStatus("pruning");
         }
 
+        private void toggleBeamSearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            useBeamSearch = !useBeamSearch;
+
+            UpdateModesStatus("beam");
+        }
+
+        private void TB_beamWidth_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                beamWidth = Convert.ToInt32(TB_beamWidth.Text);
+            }
+            catch (Exception exp)
+            {
+                return;
+            }
+
+            UpdateModesStatus("beam");
+        }
+
         private void toggleSyncSearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
             useSyncSearch = !useSyncSearch;
@@ -770,7 +837,7 @@ namespace Recorder
                 }
                 else
                 {
-                    User identifiedUser = UserIdentification.IdentifyVoice(seq, templateData, usePruning, pruningWidth, useSyncSearch, shiftSize);
+                    User identifiedUser = UserIdentification.IdentifyVoice(seq, templateData, usePruning, pruningWidth, useBeamSearch, beamWidth);
                     matchedUser = identifiedUser.UserName;
                 }
             };

@@ -110,14 +110,54 @@ namespace Recorder
 
         #region BonusFunctions
 
-        public static void BeamSearch()
+        public static double BeamSearch(Sequence input, Sequence template, int N, int M, double beamWidth)
         {
             // TODO: Implement Pruning by limiting Path Cost (Beam Search).
-        }
+            double[] previousRow = new double[M + 1];
+            double[] currentRow = new double[M + 1];
 
-        public static void Sync_BeamSearch()
-        {
-            // TODO: Implement Time Synchronous Beam Search.
+            for (int i = 0; i <= M; i++)
+                previousRow[i] = double.MaxValue;
+
+            previousRow[0] = 0;
+
+            for (int i = 1; i <= N; i++)
+            {
+                for (int j = 0; j <= M; j++)
+                    currentRow[j] = double.MaxValue;
+
+                double minCostInRow = double.MaxValue;
+
+                for (int j = 1; j <= M; j++)
+                {
+                    double cost = CompareFrames(input.Frames[i - 1], template.Frames[j - 1]);
+
+                    double stretch = previousRow[j];
+                    double match = previousRow[j - 1];
+                    double shrink = (j > 1) ? previousRow[j - 2] : double.MaxValue;
+
+                    double pathCost = cost + Math.Min(Math.Min(stretch, match), shrink);
+                    currentRow[j] = pathCost;
+
+                    if (pathCost < minCostInRow)
+                        minCostInRow = pathCost;
+                }
+
+                // Beam pruning: eliminate paths with cost > minCost + beamWidth
+                double threshold = minCostInRow + beamWidth;
+                for (int j = 1; j <= M; j++)
+                {
+                    if (currentRow[j] > threshold)
+                        currentRow[j] = double.MaxValue;
+                }
+
+                // Swap rows
+                double[] temp = previousRow;
+                previousRow = currentRow;
+                currentRow = temp;
+            }
+
+            return previousRow[M];
         }
         #endregion
 
