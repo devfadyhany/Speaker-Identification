@@ -48,7 +48,6 @@ namespace Recorder
         #endregion
 
         public static Dictionary<AudioSignal, Sequence> templateSequences = new Dictionary<AudioSignal, Sequence>();
-        public static Dictionary<Sequence, User> existSequence = new Dictionary<Sequence, User>();
 
         private static bool matchLock = false;
 
@@ -100,7 +99,6 @@ namespace Recorder
                         templateSequences.Add(trainSignal, null);
                         trainSequence = MFCC.MFCC.ExtractFeatures(trainSignal.data, trainSignal.sampleRate);
                         templateSequences[trainSignal] = trainSequence;
-                        existSequence[trainSequence] = trainUser;
                     }
 
                     if (testSequence == trainSequence)
@@ -184,8 +182,6 @@ namespace Recorder
                         templateSequence = MFCC.MFCC.ExtractFeatures(templateSignal.data, templateSignal.sampleRate);
                         templateSequences[templateSignal] = templateSequence;
                     }
-                    
-                    existSequence[templateSequence] = templateUser;
                 }
             }
             trainTime.Stop();
@@ -198,7 +194,7 @@ namespace Recorder
                 size += x.UserTemplates.Count;
             }
 
-            string[] matchedArray = new string[size + 1];
+            string[] matchedArray = new string[size];
 
             Parallel.For(0, inputDB.Count, i =>
             {
@@ -218,10 +214,7 @@ namespace Recorder
             List<string> matchedUsers = new List<string>();
 
             foreach (string s in matchedArray)
-            {
-                if (s != null)
-                    matchedUsers.Add(s);
-            }
+                matchedUsers.Add(s);
 
             totalTime.Stop();
 
@@ -237,9 +230,6 @@ namespace Recorder
         public static string Time_Sync_Search(AudioSignal signal, List<User> templateDB, bool usePruning, int pruningWidth, bool useBeam, int beamWidth)
         {
             Sequence inputSequence = AudioOperations.ExtractFeatures(signal);
-
-            if (existSequence.ContainsKey(inputSequence))
-                return existSequence[inputSequence].UserName;
 
             string bestUser = "";
             double bestDistance = double.MaxValue;

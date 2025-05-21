@@ -76,7 +76,7 @@ namespace Recorder
                     int offsetJ = j - (i - pruningWidth);
                     int offsetPrevious = j - (i - 1 - pruningWidth);
 
-                    double cost = CompareFrames(input.Frames[i - 1], template.Frames[j - 1]);
+                    double eculadianDistance = CompareFrames(input.Frames[i - 1], template.Frames[j - 1]);
 
                     double stretchCost = double.MaxValue, matchCost = double.MaxValue, shrinkCost = double.MaxValue;
 
@@ -92,10 +92,9 @@ namespace Recorder
                             shrinkCost = previousRow[offsetPrevious - 2];
                     }
 
-                    currentRow[offsetJ] = cost + Math.Min(Math.Min(stretchCost, matchCost), shrinkCost);
+                    currentRow[offsetJ] = eculadianDistance + Math.Min(Math.Min(stretchCost, matchCost), shrinkCost);
                 }
 
-                // Swap rows
                 double[] temp = previousRow;
                 previousRow = currentRow;
                 currentRow = temp;
@@ -143,7 +142,6 @@ namespace Recorder
                         minCostInRow = pathCost;
                 }
 
-                // Beam pruning: eliminate paths with cost > minCost + beamWidth
                 double threshold = minCostInRow + beamWidth;
                 for (int j = 1; j <= M; j++)
                 {
@@ -151,7 +149,6 @@ namespace Recorder
                         currentRow[j] = double.MaxValue;
                 }
 
-                // Swap rows
                 double[] temp = previousRow;
                 previousRow = currentRow;
                 currentRow = temp;
@@ -159,6 +156,7 @@ namespace Recorder
 
             return previousRow[M];
         }
+        
         #endregion
 
         #region HelperFunctions
