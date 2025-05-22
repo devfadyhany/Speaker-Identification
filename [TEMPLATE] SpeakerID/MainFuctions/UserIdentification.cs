@@ -186,7 +186,7 @@ namespace Recorder
             }
             trainTime.Stop();
 
-            Console.WriteLine("train time: " + ((trainTime.ElapsedMilliseconds / 1000) / 60) + " min");
+            Console.WriteLine("train time: " + (trainTime.ElapsedMilliseconds / 1000) + " sec");
 
             int size = 0;
             foreach (User x in inputDB)
@@ -222,7 +222,7 @@ namespace Recorder
             double accuracy = (1 - error) * 100;
 
             MessageBox.Show("Test Accuracy: " + accuracy + "%" 
-                        + "\nExecution Time: " + ((totalTime.ElapsedMilliseconds / 1000) / 60)  + " min");
+                        + "\nExecution Time: " + (totalTime.ElapsedMilliseconds / 1000)  + " sec");
         }
 
         #region Bonus Functions
